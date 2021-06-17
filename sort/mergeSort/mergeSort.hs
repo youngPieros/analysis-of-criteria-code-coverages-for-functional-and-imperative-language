@@ -3,9 +3,9 @@ mergeSort [] = []
 mergeSort [a] = [a]
 mergeSort array = merge leftSortedList rightSortedList
 	where
-		leftSortedList = mergeSort $ take halsSize array
-		rightSortedList = mergeSort $ drop halsSize array
-		halsSize = div (length array) 2
+		leftSortedList = mergeSort $ take middleIndex array
+		rightSortedList = mergeSort $ drop middleIndex array
+		middleIndex = div (length array) 2
 
 merge :: (Ord a) => [a] -> [a] -> [a]
 merge [] array = array

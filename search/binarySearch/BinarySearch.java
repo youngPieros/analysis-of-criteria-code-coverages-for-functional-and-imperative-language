@@ -1,3 +1,5 @@
+package search.binarySearch;
+
 public class BinarySearch {
     static int number;
     static int[] numbers;
@@ -22,8 +24,8 @@ public class BinarySearch {
     public static int findWithBinarySearchAlgorithm(int number, int[] numbers) {
         int beginRange = 0;
         int endRange = numbers.length;
-        while (beginRange <= endRange) {
-            int middleRange = (int)((beginRange + endRange) / 2);
+        while (beginRange < endRange) {
+            int middleRange = (beginRange + endRange) / 2;
             if (number == numbers[middleRange])
                 return middleRange;
             if (number < numbers[middleRange])

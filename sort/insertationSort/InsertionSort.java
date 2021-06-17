@@ -1,3 +1,5 @@
+package sort.insertationSort;
+
 public class InsertionSort {
     static int[] numbers;
 
@@ -33,10 +35,12 @@ public class InsertionSort {
     }
 
     public static String ArrayToString(int[] numbers) {
-    	String stringified = "[";
-    	for (int i = 0; i < numbers.length - 1; i++)
-    		stringified += numbers[i] + ", ";
-    	stringified += numbers[numbers.length - 1] + "]";
-    	return stringified;
+        StringBuilder stringedArray = new StringBuilder("[");
+        for (int i = 0; i < numbers.length - 1; i++)
+            stringedArray.append(numbers[i]).append(",");
+        if (numbers.length != 0)
+            stringedArray.append(numbers[numbers.length - 1]);
+        stringedArray.append("]");
+        return stringedArray.toString();
     }
 }

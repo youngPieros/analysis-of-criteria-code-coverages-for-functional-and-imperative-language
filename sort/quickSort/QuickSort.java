@@ -1,3 +1,5 @@
+package sort.quickSort;
+
 public class QuickSort {
     static int[] numbers;
 
@@ -24,17 +26,16 @@ public class QuickSort {
     }
 
     public static int partition(int[] numbers, int beginIndex, int endIndex) {
-        int pivotIndex = endIndex;
         int pivotNumber = numbers[endIndex];
-        int lastBiggetIndex = beginIndex - 1;
+        int lastBiggestIndex = beginIndex - 1;
         for (int i = beginIndex; i < endIndex; i++) {
             if (numbers[i] < pivotNumber) {
-                lastBiggetIndex++;
-                swap(numbers, lastBiggetIndex, i);
+                lastBiggestIndex++;
+                swap(numbers, lastBiggestIndex, i);
             }
         }
-        swap(numbers, ++lastBiggetIndex, endIndex);
-        return lastBiggetIndex;
+        swap(numbers, ++lastBiggestIndex, endIndex);
+        return lastBiggestIndex;
     }
 
     public static void sort(int[] numbers, int begin, int end) {
@@ -46,10 +47,12 @@ public class QuickSort {
     }
 
     public static String ArrayToString(int[] numbers) {
-    	String stringified = "[";
-    	for (int i = 0; i < numbers.length - 1; i++)
-    		stringified += numbers[i] + ", ";
-    	stringified += numbers[numbers.length - 1] + "]";
-    	return stringified;
+        StringBuilder stringedArray = new StringBuilder("[");
+        for (int i = 0; i < numbers.length - 1; i++)
+            stringedArray.append(numbers[i]).append(",");
+        if (numbers.length != 0)
+            stringedArray.append(numbers[numbers.length - 1]);
+        stringedArray.append("]");
+        return stringedArray.toString();
     }
 }

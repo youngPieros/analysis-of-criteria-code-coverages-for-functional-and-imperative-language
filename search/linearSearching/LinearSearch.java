@@ -1,3 +1,5 @@
+package search.linearSearching;
+
 public class LinearSearch {
     static int number;
     static int[] numbers;
