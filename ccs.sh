@@ -112,7 +112,7 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
   mkdir -p ./bin/java
   cp ./java/Main.java ./bin/java
   mkdir -p ./bin/classes
-  javac -d ./bin/classes ./java/Main.java 2>java_compile_log && java_compile_successfully=true
+  javac -d ./bin/classes ./java/Main.java &>java_compile_log && java_compile_successfully=true
   if [[ $java_compile_successfully = true ]]; then
     echo "* java compiled successfully"
     if [[ -e java_compile_log ]]; then
