@@ -8,7 +8,7 @@ public class Main {
     private int networkSize;
     private ArrayList<String> network;
     private int numberOfStages;
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         Main networkHandler = new Main();
@@ -48,7 +48,7 @@ public class Main {
         this.network = new ArrayList<>();
         this.numbers = new ArrayList<>();
         for (int i = 0; i < this.networkSize; i++)
-            this.network.add(scanner.nextLine());
+            this.network.add(scanner.next());
         for (int i = 0; i < this.networkSize; i++)
             this.numbers.add(scanner.nextInt());
     }
