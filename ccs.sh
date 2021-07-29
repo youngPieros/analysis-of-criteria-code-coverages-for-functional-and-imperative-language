@@ -177,7 +177,7 @@ echo
 # run java code with test cases and generate report
 if [[ $run_java = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder
-  (java -javaagent:./jacocoagent.jar -cp ./bin/classes Main < testcases) >> log
+  (java -javaagent:./jacocoagent.jar -cp ./bin/classes Main < testcases) > java_output
   echo "*** java program ran successfully with test cases"
   if [[ $ignore_report = false ]]; then
     (java -jar ./jacococli.jar report ./jacoco.exec --html ./report --sourcefiles ./bin/ --classfiles ./bin/classes) |& cat >> log
@@ -187,7 +187,7 @@ fi
 # run haskell code with test cases and generate report
 if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder/haskell
-  (cat ../testcases | ./Main) >> ../log
+  (cat ../testcases | ./Main) > ../haskell_output
   echo "*** haskell program ran successfully with test cases"
   hpc report Main > reportfile
   if [[ $ignore_report = true ]]; then
@@ -209,7 +209,15 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
 fi
 
 
-
+if [[ $double_check = true ]]; then
+  output_different=$(diff ./bin/$main_folder/java_output ./bin/$main_folder/haskell_output)
+  if [[ -n $output_different ]]; then
+    echo
+    echo "Error. There is some different between java output and haskell output"
+    diff ./bin/$main_folder/java_output ./bin/$main_folder/haskell_output
+    exit 1
+  fi
+fi
 # check ignoring generating reports
 if [[ $ignore_report = true ]]; then
   echo "*** run programs with test cases has been completely done"
