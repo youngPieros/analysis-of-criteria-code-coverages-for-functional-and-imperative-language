@@ -1,7 +1,9 @@
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
     static int[] numbers;
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         try {
@@ -14,9 +16,10 @@ public class Main {
     }
 
     private static void parseInputs(String[] args) {
-        numbers = new int[args.length];
-        for (int i = 0; i < args.length; i++)
-            numbers[i] = Integer.parseInt(args[i]);
+        int numberSize = scanner.nextInt();
+        numbers = new int[numberSize];
+        for (int i = 0; i < numberSize; i++)
+            numbers[i] = scanner.nextInt();
     }
 
     public static void merge(int[] numbers, int beginIndex, int middleIndex, int endIndex) {
