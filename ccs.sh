@@ -7,6 +7,7 @@ run_java=false
 run_haskell=false
 run_java_haskell=true
 ignore_run_testcases=false
+double_check=false
 run_last_testcases=false
 ignore_report=false
 
@@ -20,7 +21,8 @@ function help() {
   echo  "  -h or --haskell:                 compile haskell folder and use it to run test cases."
   echo  "  -i or --ignore-testcase:         does not run output files with test case."
   echo  "  -l or --last-testcases:          does not run test-generator script to run programs with last test cases"
-  echo  "  -n or --no-report:ignore generate report html files"
+  echo  "  -n or --no-report:               ignore generate report html files"
+  echo  "  -dc or --check-outputs           compare output of haskell and java(this feature is enabled when both of java and haskell will be run)"
   echo
   echo "example: "
   echo "  ccs mergesort -h -t :: this command run all phases of ccs for haskell code with new generated test cases"
@@ -48,6 +50,9 @@ while test $# -gt 0; do
       ;;
     -n|--no-report)
       export ignore_report=true
+      ;;
+    -dc|--check-outputs)
+      export double_check=true
       ;;
     *)
       if [[ -z $main_folder ]]; then
