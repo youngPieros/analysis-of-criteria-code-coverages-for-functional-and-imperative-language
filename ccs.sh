@@ -69,7 +69,7 @@ if [[ -z $main_folder ]]; then
   echo "Try --help for more information."
   exit 1
 fi
-if [[ ! -d $main_folder ]]; then
+if [[ ! -d ./repository/$main_folder ]]; then
   echo "Main folder does not exist."
   echo "Try --help for more information."
   exit 1
@@ -88,17 +88,17 @@ touch ./bin/$main_folder/log
 
 # compile java
 if [[ $run_java = true || $run_java_haskell = true ]]; then
-  if [[ ! -d $main_folder/java ]]; then
-    echo "java folder does not exist in $main_folder"
+  if [[ ! -d ./repository/$main_folder/java ]]; then
+    echo "java folder does not exist in repository/$main_folder"
     exit 1
   fi
-  if [[ ! -e $main_folder/java/Main.java ]]; then
-    echo "Main.java file does not exist in $main_folder/java"
+  if [[ ! -e ./repository/$main_folder/java/Main.java ]]; then
+    echo "Main.java file does not exist in repository/$main_folder/java"
     exit 1
   fi
   mkdir -p ./bin/$main_folder/java
   cp lib/* ./bin/$main_folder/
-  cp ./$main_folder/java/* ./bin/$main_folder/java
+  cp ./repository/$main_folder/java/* ./bin/$main_folder/java
   cd ./bin/$main_folder
   mkdir -p ./bin/java
   cp ./java/Main.java ./bin/java
@@ -109,16 +109,16 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
 fi
 # compile haskell
 if [[ $run_haskell = true || $run_java_haskell = true ]]; then
-  if [[ ! -d $main_folder/haskell ]]; then
-    echo "haskell folder does not exist in $main_folder"
+  if [[ ! -d ./repository/$main_folder/haskell ]]; then
+    echo "haskell folder does not exist in repository/$main_folder"
     exit 1
   fi
-  if [[ ! -e $main_folder/haskell/Main.hs ]]; then
-    echo "Main.hs file does not exist in $main_folder/haskell"
+  if [[ ! -e ./repository/$main_folder/haskell/Main.hs ]]; then
+    echo "Main.hs file does not exist in repository/$main_folder/haskell"
     exit 1
   fi
   mkdir -p ./bin/$main_folder/haskell
-  cp ./$main_folder/haskell/* ./bin/$main_folder/haskell
+  cp ./repository/$main_folder/haskell/* ./bin/$main_folder/haskell
   cd ./bin/$main_folder/haskell
   if [[ -e Main ]]; then
     rm Main
@@ -149,16 +149,16 @@ if [[ $ignore_run_testcases = true ]]; then
 fi
 # run test case generator
 if [[ $run_last_testcases = false ]]; then
-  if [[ ! -d ./$main_folder/testgenerator ]]; then
-    echo "test generator folder does not exist in $main_folder"
+  if [[ ! -d ./repository/$main_folder/testgenerator ]]; then
+    echo "test generator folder does not exist in repository/$main_folder"
     exit 1
   fi
-  if [[ ! -e ./$main_folder/testgenerator/testcaseGenerator.py ]]; then
-    echo "testcaseGenerator.py file does not exist in $main_folder/testcasegenerator"
+  if [[ ! -e ./repository/$main_folder/testgenerator/testcaseGenerator.py ]]; then
+    echo "testcaseGenerator.py file does not exist in repository/$main_folder/testcasegenerator"
     exit 1
   fi
   mkdir -p ./bin/$main_folder/testgenerator
-  cp ./$main_folder/testgenerator/* ./bin/$main_folder/testgenerator
+  cp ./repository/$main_folder/testgenerator/* ./bin/$main_folder/testgenerator
   cd ./bin/$main_folder/testgenerator
   python3 testcaseGenerator.py > ../testcases
   cd ../../..
