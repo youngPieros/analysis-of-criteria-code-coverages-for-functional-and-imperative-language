@@ -4,6 +4,7 @@ main_folder=''
 destination='./bin'
 
 run_java=false
+java_compile_successfully=false
 run_haskell=false
 run_java_haskell=true
 ignore_run_testcases=false
@@ -108,9 +109,17 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
   mkdir -p ./bin/java
   cp ./java/Main.java ./bin/java
   mkdir -p ./bin/classes
-  javac -d ./bin/classes ./java/Main.java
+  javac -d ./bin/classes ./java/Main.java 2>java_compile_log && java_compile_successfully=true
+  if [[ $java_compile_successfully = true ]]; then
+    echo "* java compiled successfully"
+    if [[ -e java_compile_log ]]; then
+      rm java_compile_log
+    fi
+  else
+    echo "# Error: failed in java compilation. check ./bin/$main_folder/java_compile_log"
+    exit 1
+  fi
   cd ../..
-  echo "* java compiled successfully"
 fi
 # compile haskell
 if [[ $run_haskell = true || $run_java_haskell = true ]]; then
