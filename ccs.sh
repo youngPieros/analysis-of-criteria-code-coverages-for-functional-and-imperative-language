@@ -5,6 +5,7 @@ destination='./bin'
 
 run_java=false
 java_compile_successfully=false
+java_execution_successfully=false
 run_haskell=false
 haskell_compile_successfully=false
 run_java_haskell=true
@@ -161,7 +162,6 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
     exit 1
   fi
   cd ../../..
-  echo "* haskell compiled successfully"
 fi
 
 
@@ -196,8 +196,18 @@ echo
 # run java code with test cases and generate report
 if [[ $run_java = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder
-  (java -javaagent:./jacocoagent.jar -cp ./bin/classes Main < testcases) > java_output
-  echo "*** java program ran successfully with test cases"
+  java -javaagent:./jacocoagent.jar -cp ./bin/classes Main < testcases &> java_output && java_execution_successfully=true
+  if [[ $java_execution_successfully = true ]]; then
+    echo "*** java program ran successfully with test cases"
+    if [[ -e java_execution_log ]]; then
+      rm java_execution_log
+    fi
+  else
+    cp java_output java_execution_log
+    rm java_output
+    echo "# Error: failed in execute java program. check ./bin/$main_folder/java_execution_log"
+    exit 1
+  fi
   if [[ $ignore_report = false ]]; then
     (java -jar ./jacococli.jar report ./jacoco.exec --html ./report --sourcefiles ./bin/ --classfiles ./bin/classes) |& cat >> log
   fi
