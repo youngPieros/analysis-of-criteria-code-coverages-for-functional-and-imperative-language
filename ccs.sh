@@ -197,15 +197,13 @@ echo
 # run java code with test cases and generate report
 if [[ $run_java = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder
-  java -javaagent:./jacocoagent.jar -cp ./bin/classes Main < testcases &> java_output && java_execution_successfully=true
+  java -javaagent:./jacocoagent.jar -cp ./bin/classes Main < testcases > java_output 2>java_execution_log && java_execution_successfully=true
   if [[ $java_execution_successfully = true ]]; then
     echo "*** java program ran successfully with test cases"
     if [[ -e java_execution_log ]]; then
       rm java_execution_log
     fi
   else
-    cp java_output java_execution_log
-    rm java_output
     echo "# Error: failed in execute java program. check ./bin/$main_folder/java_execution_log"
     exit 1
   fi
@@ -217,15 +215,13 @@ fi
 # run haskell code with test cases and generate report
 if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder/haskell
-  (cat ../testcases | ./Main &> ../haskell_output) && haskell_execution_successfully=true
+  (cat ../testcases | ./Main > ../haskell_output 2>../haskell_execution_log) && haskell_execution_successfully=true
   if [[ $haskell_execution_successfully = true ]]; then
     echo "*** haskell program ran successfully with test cases"
     if [[ -e ../haskell_execution_log ]]; then
       rm ../haskell_execution_log
     fi
   else
-    cp ../haskell_output ../haskell_execution_log
-    rm ../haskell_output
     echo "# Error: failed in execute haskell program. check ./bin/$main_folder/haskell_execution_log"
     exit 1
   fi
