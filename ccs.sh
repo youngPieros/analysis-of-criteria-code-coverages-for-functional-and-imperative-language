@@ -9,6 +9,7 @@ java_execution_successfully=false
 run_haskell=false
 haskell_compile_successfully=false
 run_java_haskell=true
+haskell_execution_successfully=false
 ignore_run_testcases=false
 double_check=false
 run_last_testcases=false
@@ -216,8 +217,19 @@ fi
 # run haskell code with test cases and generate report
 if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder/haskell
-  (cat ../testcases | ./Main) > ../haskell_output
-  echo "*** haskell program ran successfully with test cases"
+  (cat ../testcases | ./Main &> ../haskell_output) && haskell_execution_successfully=true
+  if [[ $haskell_execution_successfully = true ]]; then
+    echo "*** haskell program ran successfully with test cases"
+    if [[ -e ../haskell_execution_log ]]; then
+      rm ../haskell_execution_log
+    fi
+  else
+    cp ../haskell_output ../haskell_execution_log
+    rm ../haskell_output
+    echo "# Error: failed in execute haskell program. check ./bin/$main_folder/haskell_execution_log"
+    exit 1
+  fi
+
   hpc report Main > reportfile
   if [[ $ignore_report = true ]]; then
     cd ../../..
