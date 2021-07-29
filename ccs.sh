@@ -13,6 +13,7 @@ haskell_execution_successfully=false
 ignore_run_testcases=false
 double_check=false
 run_last_testcases=false
+test_generator_execution_successfully=false
 ignore_report=false
 
 
@@ -185,10 +186,19 @@ if [[ $run_last_testcases = false ]]; then
   mkdir -p ./bin/$main_folder/testgenerator
   cp ./repository/$main_folder/testgenerator/* ./bin/$main_folder/testgenerator
   cd ./bin/$main_folder/testgenerator
-  python3 testcaseGenerator.py > ../testcases
+  python3 testcaseGenerator.py > ../testcases 2>../testgenerator_execution_log && test_generator_execution_successfully=true
+  if [[ $test_generator_execution_successfully = true ]]; then
+    echo
+    echo "** test-generator ran successfully and new test case is generated"
+    if [[ -e ../testgenerator_execution_log ]]; then
+      rm ../testgenerator_execution_log
+    fi
+  else
+    echo
+    echo "# Error: failed in execute test generator. check ./bin/$main_folder/testgenerator_execution_log"
+    exit 1
+  fi
   cd ../../..
-  echo
-  echo "** test-generator ran successfully and new test case is generated"
 fi
 
 
@@ -222,6 +232,7 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
       rm ../haskell_execution_log
     fi
   else
+    echo
     echo "# Error: failed in execute haskell program. check ./bin/$main_folder/haskell_execution_log"
     exit 1
   fi
