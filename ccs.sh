@@ -172,7 +172,7 @@ echo
 # run java code with test cases and generate report
 if [[ $run_java = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder
-  (java -javaagent:./jacocoagent.jar -cp ./bin/classes Main $(cat testcases)) >> log
+  (java -javaagent:./jacocoagent.jar -cp ./bin/classes Main < testcases) >> log
   echo "*** java program ran successfully with test cases"
   if [[ $ignore_report = false ]]; then
     (java -jar ./jacococli.jar report ./jacoco.exec --html ./report --sourcefiles ./bin/ --classfiles ./bin/classes) |& cat >> log
