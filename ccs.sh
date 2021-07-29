@@ -6,6 +6,7 @@ destination='./bin'
 run_java=false
 java_compile_successfully=false
 run_haskell=false
+haskell_compile_successfully=false
 run_java_haskell=true
 ignore_run_testcases=false
 double_check=false
@@ -149,7 +150,16 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   if [[ -e Main.tix ]]; then
     rm -rf Main.tix
   fi
-  ghc -fhpc Main |& cat >> ../log
+  ghc -fhpc Main &>../haskell_compile_log && haskell_compile_successfully=true
+  if [[ $haskell_compile_successfully = true ]]; then
+    echo "* haskell compiled successfully"
+    if [[ -e ../haskell_compile_log ]]; then
+      rm ../haskell_compile_log
+    fi
+  else
+    echo "# Error: failed in haskell compilation. check ./bin/$main_folder/haskell_compile_log"
+    exit 1
+  fi
   cd ../../..
   echo "* haskell compiled successfully"
 fi
