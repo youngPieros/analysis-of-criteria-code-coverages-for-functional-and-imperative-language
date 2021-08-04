@@ -7,4 +7,6 @@ output = ""
 for number in numbers:
     output += str(number) + " "
 
+
+print(config.number_counts)
 print(output.strip())
