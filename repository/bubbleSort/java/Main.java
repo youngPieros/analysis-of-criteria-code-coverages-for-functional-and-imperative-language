@@ -1,6 +1,4 @@
-package sort.bubbleSort;
-
-public class BubbleSort {
+public class Main {
     static int[] numbers;
 
     public static void main(String[] args) {
