@@ -1,11 +1,12 @@
-package sort.insertationSort;
+import java.util.Scanner;
 
-public class InsertionSort {
+public class Main {
     static int[] numbers;
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         try {
-            parseInputs(args);
+            parseInputs();
             sort(numbers);
             System.out.println("sorted:\n" + ArrayToString(numbers));
         } catch (Exception e) {
@@ -13,10 +14,11 @@ public class InsertionSort {
         }
     }
 
-    private static void parseInputs(String[] args) {
-        numbers = new int[args.length];
-        for (int i = 0; i < args.length; i++)
-            numbers[i] = Integer.parseInt(args[i]);
+    private static void parseInputs() {
+        int numberSize = scanner.nextInt();
+        numbers = new int[numberSize];
+        for (int i = 0; i < numberSize; i++)
+            numbers[i] = scanner.nextInt();
     }
 
     public static void swap(int[] numbers, int firstIndex, int secondIndex) {
