@@ -14,6 +14,7 @@ parseInputs :: [String] -> [Int]
 parseInputs inputs = map toInt inputs
 
 main = do
+  numberCounts <- getLine
   args <- getLine
   let inputs = parseInputs  (words args)
   let sortedNumbers =  insertionSort inputs
