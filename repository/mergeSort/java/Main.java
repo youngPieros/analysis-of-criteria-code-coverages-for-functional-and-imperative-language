@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            parseInputs(args);
+            parseInputs();
             sort(numbers, 0, numbers.length - 1);
             System.out.println("sorted:\n" + ArrayToString(numbers));
         } catch (Exception e) {
@@ -15,7 +15,7 @@ public class Main {
         }
     }
 
-    private static void parseInputs(String[] args) {
+    private static void parseInputs() {
         int numberSize = scanner.nextInt();
         numbers = new int[numberSize];
         for (int i = 0; i < numberSize; i++)
