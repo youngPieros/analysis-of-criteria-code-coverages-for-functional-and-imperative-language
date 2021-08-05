@@ -11,6 +11,7 @@ for i in range(number_of_testcases):
         searched_member = collection[index]
     else:
         searched_member = 2 * randint(0, config.size_of_searched_collection)
+    print(len(collection), end=" ")
     print(searched_member, end=" ")
     for member in collection:
         print(member, end=" ")
