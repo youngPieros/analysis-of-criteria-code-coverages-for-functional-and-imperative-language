@@ -30,7 +30,7 @@ function help() {
   echo  "  -dc or --check-outputs           compare output of haskell and java(this feature is enabled when both of java and haskell will be run)"
   echo
   echo "example: "
-  echo "  ccs mergesort -h -t :: this command run all phases of ccs for haskell code with new generated test cases"
+  echo "  ccs mergesort -h :: this command run all phases of ccs for haskell code with new generated test cases"
 }
 
 while test $# -gt 0; do
@@ -87,10 +87,18 @@ fi
 
 
 
-# create main directory and log file
-mkdir -p ./bin/$main_folder
-if [[ -e ./bin/$main_folder/log ]]; then
-  rm ./bin/$main_folder/log
+# create main directory and log file and clean last jobs
+if [[ -d ./bin/$main_folder ]]; then
+  if [[ $run_last_testcases = true && -e ./bin/$main_folder/testcases ]]; then
+    testcase_content=""
+    testcase_content=$(cat ./bin/$main_folder/testcases)
+    rm -rf ./bin/$main_folder/*
+    echo $testcase_content > ./bin/$main_folder/testcases
+  else
+    rm -rf ./bin/$main_folder/*
+  fi
+else
+  mkdir -p ./bin/$main_folder
 fi
 touch ./bin/$main_folder/log
 
