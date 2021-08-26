@@ -114,14 +114,14 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
     echo "Main.java file does not exist in repository/$main_folder/java"
     exit 1
   fi
-  mkdir -p ./bin/$main_folder/java
+  mkdir -p ./bin/$main_folder/java/$main_folder/java
   cp lib/* ./bin/$main_folder/
-  cp ./repository/$main_folder/java/* ./bin/$main_folder/java
+  cp ./repository/$main_folder/java/* ./bin/$main_folder/java/$main_folder/java
   cd ./bin/$main_folder
   mkdir -p ./bin/java
-  cp ./java/Main.java ./bin/java
+  cp -r ./java/* ./bin/java/
   mkdir -p ./bin/classes
-  javac -d ./bin/classes ./java/Main.java &>java_compile_log && java_compile_successfully=true
+  javac -d ./bin/classes ./bin/java/$main_folder/java/Main.java &>java_compile_log && java_compile_successfully=true
   if [[ $java_compile_successfully = true ]]; then
     echo "* java compiled successfully"
     if [[ -e java_compile_log ]]; then
@@ -215,7 +215,7 @@ echo
 # run java code with test cases and generate report
 if [[ $run_java = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder
-  java -javaagent:./jacocoagent.jar -cp ./bin/classes Main < testcases > java_output 2>java_execution_log && java_execution_successfully=true
+  java -javaagent:./jacocoagent.jar -cp ./bin/classes $main_folder.java.Main < testcases > java_output 2>java_execution_log && java_execution_successfully=true
   if [[ $java_execution_successfully = true ]]; then
     echo "*** java program ran successfully with test cases"
     if [[ -e java_execution_log ]]; then
