@@ -4,6 +4,7 @@ Your class should be named Solution
 Read input from standard input (STDIN) and print output to standard output(STDOUT).
 For more details, please check http://www.interviewstreet.com/recruit/challenges/faq/view#stdio
 */
+package BatchScheduling.java;
 
 import java.util.*;
 

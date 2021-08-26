@@ -1,3 +1,5 @@
+package BatchScheduling.java;
+
 import java.util.*;
 
 class Main1 {

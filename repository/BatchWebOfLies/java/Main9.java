@@ -21,7 +21,10 @@
 					TO WATCH
 					1-what is bitmasking by kartik arora youtube
 					*/
-					            import java.util.*;
+                    package BatchWebOfLies.java;
+
+
+                    import java.util.*;
 							    import java.math.*;
 							    import java.io.*; 
 							    import java.util.stream.Collectors;
