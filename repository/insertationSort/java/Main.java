@@ -1,3 +1,5 @@
+package insertationSort.java;
+
 import java.util.Scanner;
 
 public class Main {

@@ -1,3 +1,5 @@
+package quickSort.java;
+
 import java.util.Scanner;
 
 public class Main {
