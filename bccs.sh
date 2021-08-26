@@ -97,17 +97,17 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
     echo "java folder does not exist in repository/$main_folder"
     exit 1
   fi
-  mkdir -p ./bin/$main_folder/java
+  mkdir -p ./bin/$main_folder/java/$main_folder/java
   cp lib/* ./bin/$main_folder/
-  cp ./repository/$main_folder/java/* ./bin/$main_folder/java
+  cp ./repository/$main_folder/java/* ./bin/$main_folder/java/$main_folder/java
   cd ./bin/$main_folder
   mkdir -p ./bin/java
-  cp ./java/* ./bin/java
-  java_files=$(ls ./bin/java/)
+  cp -r ./java/* ./bin/java/
+  java_files=$(ls ./bin/java/$main_folder/java/)
   mkdir -p ./bin/classes
   for file in ${java_files[@]}; do
     java_files_number=$(expr $java_files_number + 1)
-    javac -d ./bin/classes ./java/$file &>java_compile_log || java_compile_successfully=false
+    javac -d ./bin/classes ./bin/java/$main_folder/java/$file &>java_compile_log || java_compile_successfully=false
     if [[ $java_compile_successfully = false ]]; then
       break
     fi
@@ -209,7 +209,7 @@ cd ../../..
 if [[ $run_java = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder
   for (( i=1; i <= $java_files_number ; i++ )); do
-    java_exec_file="Main${i}"
+    java_exec_file="$main_folder.java.Main${i}"
     java_output_file="java_output${i}"
     if [[ $is_batch_testcases = false ]]; then
       java -javaagent:./jacocoagent.jar -cp ./bin/classes $java_exec_file < testcases > $java_output_file 2>java_execution_log || java_execution_successfully=false
