@@ -5,7 +5,7 @@ destination='./bin'
 
 run_java=false
 java_compile_successfully=false
-java_execution_successfully=false
+java_execution_successfully=true
 run_haskell=false
 haskell_compile_successfully=false
 run_java_haskell=true
@@ -13,8 +13,10 @@ haskell_execution_successfully=false
 ignore_run_testcases=false
 double_check=false
 run_last_testcases=false
-test_generator_execution_successfully=false
+test_generator_execution_successfully=true
 ignore_report=false
+is_batch_testcases=false
+testcases=()
 
 
 function help() {
@@ -28,6 +30,7 @@ function help() {
   echo  "  -l or --last-testcases:          does not run test-generator script to run programs with last test cases"
   echo  "  -n or --no-report:               ignore generate report html files"
   echo  "  -dc or --check-outputs           compare output of haskell and java(this feature is enabled when both of java and haskell will be run)"
+  echo  "  -bt or --batch-testcases         use batch testcases to test"
   echo
   echo "example: "
   echo "  ccs mergesort -h :: this command run all phases of ccs for haskell code with new generated test cases"
@@ -58,6 +61,9 @@ while test $# -gt 0; do
       ;;
     -dc|--check-outputs)
       export double_check=true
+      ;;
+    -bt|--batch-testcases)
+      export is_batch_testcases=true
       ;;
     *)
       if [[ -z $main_folder ]]; then
@@ -194,7 +200,11 @@ if [[ $run_last_testcases = false ]]; then
   mkdir -p ./bin/$main_folder/testgenerator
   cp ./repository/$main_folder/testgenerator/* ./bin/$main_folder/testgenerator
   cd ./bin/$main_folder/testgenerator
-  python3 testcaseGenerator.py > ../testcases 2>../testgenerator_execution_log && test_generator_execution_successfully=true
+  if [[ $is_batch_testcases = false ]]; then
+    python3 testcaseGenerator.py > ../testcases 2>../testgenerator_execution_log || test_generator_execution_successfully=false
+  else
+    testcases=$(python3 testcaseGenerator.py 2>../testgenerator_execution_log || test_generator_execution_successfully=false)
+  fi
   if [[ $test_generator_execution_successfully = true ]]; then
     echo
     echo "** test-generator ran successfully and new test case is generated"
@@ -215,7 +225,16 @@ echo
 # run java code with test cases and generate report
 if [[ $run_java = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder
-  java -javaagent:./jacocoagent.jar -cp ./bin/classes $main_folder.java.Main < testcases > java_output 2>java_execution_log && java_execution_successfully=true
+  if [[ $is_batch_testcases = false ]]; then
+    java -javaagent:./jacocoagent.jar -cp ./bin/classes $main_folder.java.Main < testcases > java_output 2>java_execution_log || java_execution_successfully=false
+  else
+    for testcase in $testcases; do
+      java -javaagent:./jacocoagent.jar -cp ./bin/classes $main_folder.java.Main < ./testgenerator/$testcase >> java_output 2>java_execution_log || java_execution_successfully=false
+      if [[ $java_execution_successfully = false ]]; then
+        break
+      fi
+    done
+  fi
   if [[ $java_execution_successfully = true ]]; then
     echo "*** java program ran successfully with test cases"
     if [[ -e java_execution_log ]]; then
@@ -233,7 +252,17 @@ fi
 # run haskell code with test cases and generate report
 if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder/haskell
-  (cat ../testcases | ./Main > ../haskell_output 2>../haskell_execution_log) && haskell_execution_successfully=true
+  if [[ $is_batch_testcases = false ]]; then
+    (cat ../testcases | ./Main > ../haskell_output 2>../haskell_execution_log) && haskell_execution_successfully=true
+  else
+    haskell_execution_successfully=true
+    for testcase in $testcases; do
+      (cat ../testgenerator/$testcase | ./Main >> ../haskell_output 2>../haskell_execution_log) || haskell_execution_successfully=false
+      if [[ $haskell_execution_successfully = false ]]; then
+        break
+      fi
+    done
+  fi
   if [[ $haskell_execution_successfully = true ]]; then
     echo "*** haskell program ran successfully with test cases"
     if [[ -e ../haskell_execution_log ]]; then

@@ -215,14 +215,11 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
       java -javaagent:./jacocoagent.jar -cp ./bin/classes $java_exec_file < testcases > $java_output_file 2>java_execution_log || java_execution_successfully=false
     else
       for testcase in $testcases; do
-        java -javaagent:./jacocoagent.jar -cp ./bin/classes $java_exec_file < ./testgenerator/$testcase > $java_output_file 2>java_execution_log || java_execution_successfully=false
+        java -javaagent:./jacocoagent.jar -cp ./bin/classes $java_exec_file < ./testgenerator/$testcase >> $java_output_file 2>java_execution_log || java_execution_successfully=false
         if [[ $java_execution_successfully = false ]]; then
           break
         fi
       done
-    fi
-    if [[ $java_execution_successfully = false ]]; then
-      break
     fi
   done
   if [[ $java_execution_successfully = true ]]; then
@@ -246,7 +243,10 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   else
     haskell_execution_successfully=true
     for testcase in $testcases; do
-      (cat ../testgenerator/$testcase | ./Main > ../haskell_output 2>../haskell_execution_log) || haskell_execution_successfully=false
+      (cat ../testgenerator/$testcase | ./Main >> ../haskell_output 2>../haskell_execution_log) || haskell_execution_successfully=false
+      if [[ $haskell_execution_successfully = false ]]; then
+        break
+      fi
     done
   fi
   if [[ $haskell_execution_successfully = true ]]; then
