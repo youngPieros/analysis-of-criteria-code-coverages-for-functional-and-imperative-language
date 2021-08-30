@@ -1,6 +1,5 @@
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE Rank2Types #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Command
 ( Command(..)
@@ -8,49 +7,50 @@ module Command
 ) where
 
 
-
-import Control.Applicative (liftA2)
-import Control.Monad (replicateM)
-import Control.Monad.State (State, evalState, get, gets, put)
-import qualified Data.Set as Set
 import qualified Data.ByteString.Lazy.Char8 as C
-import Data.Maybe (fromJust)
+import Control.Monad.State (State, evalState)
+import Data.Maybe
+import Data.Aeson
+import Data.List
+import ReaderLib
+import CommandArgument
 
-type Scanner = State [C.ByteString]
 
-runScanner :: Scanner a -> C.ByteString -> a
-runScanner = runScannerWith C.words
+getAddRestaurantArgs :: String -> AddRestaurantArgs
+getAddRestaurantArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe AddRestaurantArgs)
 
-runScannerWith :: (C.ByteString -> [C.ByteString]) -> Scanner a -> C.ByteString -> a
-runScannerWith t s = evalState s . t
+getAddFoodArgs :: String -> AddFoodArgs
+getAddFoodArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe AddFoodArgs)
 
-bstr :: Scanner C.ByteString
-bstr = get >>= \case s : ss -> put ss >> return s
+getGetRestaurantArgs :: String -> GetRestaurantArgs
+getGetRestaurantArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe GetRestaurantArgs)
 
-int :: Scanner Int
-int = fst . fromJust . C.readInt <$> bstr
+getGetFoodArgs :: String -> GetFoodArgs
+getGetFoodArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe GetFoodArgs)
 
-times :: Int -> Scanner a -> Scanner [a]
-times = replicateM
+getAddToCartArgs :: String -> AddToCartArgs
+getAddToCartArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe AddToCartArgs)
 
-pair :: Scanner a -> Scanner b -> Scanner (a, b)
-pair = liftA2 (,)
 
-str :: Scanner String
-str = C.unpack <$> bstr
-
-many :: Scanner a -> Scanner [a]
-many s = get >>= \case [] -> return []; _ -> (:) <$> s <*> many s
-
-data Command = AddRelation Int Int | RemoveRelation Int Int | Kill deriving (Eq, Show)
+selectCommand :: String -> String -> Command
+selectCommand commandType args
+    | commandType == "addRestaurant" = AddRestaurant (getAddRestaurantArgs args)
+    | commandType == "addFood" = AddFood (getAddFoodArgs args)
+    | commandType == "getRestaurants" = GetRestaurants
+    | commandType == "getRestaurant" = GetRestaurant (getGetRestaurantArgs args)
+    | commandType == "getFood" = GetFood (getGetFoodArgs args)
+    | commandType == "addToCart" = AddToCart (getAddToCartArgs args)
+    | commandType == "getCart" = GetCart
+    | commandType == "finalizeOrder" = FinalizeOrder
+    | commandType == "getRecommendedRestaurants" = GetRecommendedRestaurants
+    | otherwise = BadCommand
 
 command :: Scanner Command
 command = do
-  commandType <- int
-  case commandType of
-    1 -> AddRelation <$> int <*> int
-    2 -> RemoveRelation <$> int <*> int
-    3 -> pure Kill
+  commandStr <- line
+  let commandType = head . words $ commandStr
+  let args = unwords . tail . words $ commandStr
+  return (selectCommand commandType args)
 
 getCommands :: Scanner [Command]
 getCommands = do

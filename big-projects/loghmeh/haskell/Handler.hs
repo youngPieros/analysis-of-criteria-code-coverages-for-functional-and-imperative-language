@@ -19,7 +19,7 @@ changeSystemState :: SystemState -> (DataBase, Response) -> SystemState
 changeSystemState systemState (database, response) = (database, snd systemState ++ [response])
 
 runScanner :: Scanner a -> C.ByteString -> a
-runScanner = runScannerWith C.words
+runScanner = runScannerWith C.lines
 
 runScannerWith :: (C.ByteString -> [C.ByteString]) -> Scanner a -> C.ByteString -> a
 runScannerWith t s = evalState s . t
