@@ -152,21 +152,6 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   mkdir -p ./bin/$main_folder/haskell
   cp ./repository/$main_folder/haskell/* ./bin/$main_folder/haskell
   cd ./bin/$main_folder/haskell
-  if [[ -e Main ]]; then
-    rm Main
-  fi
-  if [[ -e Main.hi ]]; then
-    rm Main.hi
-  fi
-  if [[ -e Main.o ]]; then
-    rm Main.o
-  fi
-  if [[ -d .hpc ]]; then
-    rm -rf .hpc
-  fi
-  if [[ -e Main.tix ]]; then
-    rm -rf Main.tix
-  fi
   ghc -fhpc Main &>../haskell_compile_log && haskell_compile_successfully=true
   if [[ $haskell_compile_successfully = true ]]; then
     echo "* haskell compiled successfully"
