@@ -14,7 +14,6 @@ public class OrderManager {
     private RestaurantManager restaurantManager;
 
     public OrderManager(String fileName) throws JsonParseException, JsonMappingException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
         this.restaurantManager = new RestaurantManager(fileName);
         this.restaurantInterface = new RestaurantInterface(restaurantManager);
         this.order = new Order (restaurantManager);
@@ -34,13 +33,10 @@ public class OrderManager {
             this.commandName = command;
             this.jsonData = "";
         }
-        System.out.println("command type : " + commandName);
-        System.out.println("json command : *" + jsonData + "*");
     }
 
-    public void runCommand (){
-        switch (commandName){
-
+    public void runCommand() {
+        switch (commandName) {
             case "addRestaurant":
                 restaurantInterface.addRestaurantInterface(jsonData);
                 break;
@@ -79,17 +75,15 @@ public class OrderManager {
         }
 
     }
-
-
-    public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
-        OrderManager orderManager = new OrderManager( "src/main/resources/restaurants.json");
-        Scanner inputScanner = new Scanner(System.in);
-        String command;
-
-        while (inputScanner.hasNextLine()) {
-            command = inputScanner.nextLine();
-            orderManager.separate(command);
-            orderManager.runCommand();
-        }
-    }
+//    public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
+//        OrderManager orderManager = new OrderManager( "src/main/resources/restaurants.json");
+//        Scanner inputScanner = new Scanner(System.in);
+//        String command;
+//
+//        while (inputScanner.hasNextLine()) {
+//            command = inputScanner.nextLine();
+//            orderManager.separate(command);
+//            orderManager.runCommand();
+//        }
+//    }
 }

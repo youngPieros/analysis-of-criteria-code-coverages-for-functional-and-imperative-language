@@ -59,9 +59,4 @@ public class RestaurantInfo {
             popularity += foodInfo.getPopularity();
         return popularity / menu.size() / distance;
     }
-
-//    public String toString() {
-//        return name + " is " + description + " location is " + location ;
-//    }
-
 }
