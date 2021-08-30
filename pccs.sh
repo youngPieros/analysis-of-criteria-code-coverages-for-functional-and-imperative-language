@@ -117,9 +117,43 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
       fi
 
       (java -jar ./jacococli.jar report ./jacoco.exec --html ../../report/$java_project --sourcefiles ./src/main/java/ --classfiles ./target/classes) |& cat >> ../../log
-      echo "$java_project was compiled and ran successfully"
+      echo "$java_project was compiled and ran successfully and report is generated"
       cd ../../../../..
     fi
   done
   cd ../../..
+fi
+
+if [[ $run_haskell = true || $run_java_haskell = true ]]; then
+  if [[ ! -d ./big-projects/$project/haskell ]]; then
+    echo "haskell folder does not exist in big-projects/$project"
+    exit 1
+  fi
+  haskell_compile_successfully=false
+  haskell_execution_successfully=false
+  cp -r ./big-projects/$project/haskell ./bin/big-projects/$project/
+  cd $main_dir/haskell
+  ghc -fhpc Main &>../log && haskell_compile_successfully=true
+  if [[ $haskell_compile_successfully = false ]]; then
+    echo "# Error: failed in haskell compilation. check $main_dir/log"
+    exit 1
+  fi
+  touch haskell_output
+  (cat ../testgenerator/tests | ./Main > ./haskell_output 2>../log) && haskell_execution_successfully=true
+  if [[ $haskell_execution_successfully = false ]]; then
+    echo "# Error: failed in execute haskell program. check $main_dir/log"
+    exit 1
+  fi
+  mkdir -p ../report/haskell
+  hpc report Main > ../report/haskell/reportfile
+  cd ../report/haskell
+  cp ../../../../../resources/haskell/* ./
+  if [[ -d haskell-report-resources ]]; then
+    rm -rf haskell-report-resources
+  fi
+  unzip -qq haskell-report-resources.zip
+  rm haskell-report-resources.zip
+  python3 haskell_html_report_generator.py < ./reportfile > ./h_report.html
+  echo "haskell was compiled and ran successfully and report is generated"
+  cd ../../../../..
 fi
