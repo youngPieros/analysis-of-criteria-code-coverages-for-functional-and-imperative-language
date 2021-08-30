@@ -1,5 +1,4 @@
 project=""
-ignore_compile=false
 
 
 function help() {
@@ -8,7 +7,6 @@ function help() {
   echo
   echo "Options:"
   echo  "  -p or --project:                 specifies name of project"
-  echo  "  -ic or --ignore-compiling        ignore compiling maven project"
   echo
   echo "example: "
   echo "  pccs loghmeh"
@@ -24,9 +22,6 @@ while test $# -gt 0; do
       shift
       export project=$1
       export run_java_haskell=false
-      ;;
-     -ic|--ignore-compiling)
-      export ignore_compile=true
       ;;
     *)
       echo "Invalid command. Try --help for more information."
@@ -62,27 +57,41 @@ touch ./bin/big-projects/$project/log
 main_dir="./bin/big-projects/$project"
 
 # compile and run java files
-if [[ $ignore_compile = false ]]; then
-  cd $main_dir
-  java_projects=$(ls java)
-  for java_project in ${java_projects[@]}; do
-    if [[ -d java/$java_project ]]; then
-      cp ../../../lib/* java/$java_project/
-      cd java/$java_project
-      mvn package
-      cd target
-      jar_file=$project-1.0-jar-with-dependencies.jar
-      if [[ -e $jar_file ]]; then
-        unzip $jar_file -d ./out
-        cd ..
-      else
-        echo "please check artifactId in $java_project/pom.xml file. it should be same as project name folder(in this case it should be $project)"
-        exit 1
-      fi
-      java -javaagent:./jacocoagent.jar -cp ./target/out Main < ../../tests
-      (java -jar ./jacococli.jar report ./jacoco.exec --html ../../report/$java_project --sourcefiles ./src/main/java/ --classfiles ./target/classes) |& cat >> ../../log
-      cd ../../../../..
+cd $main_dir
+java_projects=$(ls java)
+for java_project in ${java_projects[@]}; do
+  if [[ -d java/$java_project ]]; then
+    java_execution_successfully=true
+    java_compile_successfully=true
+    cp ../../../lib/* java/$java_project/
+    cd java/$java_project
+    touch output
+    touch log
+
+    mvn -Dmaven.test.skip=true package >> log || java_compile_successfully=false
+    if [[ $java_compile_successfully = false ]]; then
+      echo "# Error: failed in java compilation. check $main_dir/java/$java_project/log"
+      exit 1
     fi
-  done
-fi
+
+    cd target
+    jar_file=$project-1.0-jar-with-dependencies.jar
+    if [[ -e $jar_file ]]; then
+      unzip -qq $jar_file -d ./out
+      cd ..
+    else
+      echo "please check artifactId in $java_project/pom.xml file. it should be same as project name folder(in this case it should be $project)"
+      exit 1
+    fi
+    java -javaagent:./jacocoagent.jar -cp ./target/out Main < ../../tests > output 2>>log || java_execution_successfully=false
+    if [[ $java_execution_successfully = false ]]; then
+      echo "# Error: failed in execute java program. check $main_dir/java/$java_project/log"
+      exit 1
+    fi
+
+    (java -jar ./jacococli.jar report ./jacoco.exec --html ../../report/$java_project --sourcefiles ./src/main/java/ --classfiles ./target/classes) |& cat >> ../../log
+    echo "$java_project was compiled and ran successfully"
+    cd ../../../../..
+  fi
+done
 
