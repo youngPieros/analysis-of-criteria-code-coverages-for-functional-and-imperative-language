@@ -47,6 +47,7 @@ runCommand command database = case command of
     AddToCart args -> addToCart (AddToCart args) database
     GetCart -> getCart GetCart database
     FinalizeOrder -> finalizeOrder FinalizeOrder database
+    GetRecommendedRestaurants -> getRecommendedRestaurants GetRecommendedRestaurants database
     BadCommand -> (database, Response "bad command!!!")
 
 

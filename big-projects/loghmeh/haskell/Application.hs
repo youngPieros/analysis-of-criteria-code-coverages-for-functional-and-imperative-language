@@ -9,6 +9,7 @@ module Application
 , addToCart
 , getCart
 , finalizeOrder
+, getRecommendedRestaurants
 ) where
 
 import qualified Data.ByteString.Lazy.Char8 as C
@@ -143,3 +144,12 @@ finalizeOrder FinalizeOrder db
         basket = getUserBasket db defaultUser
         defaultUser = "IMAN"
 
+
+getRecommendedRestaurants :: Command -> DataBase -> (DataBase, Response)
+getRecommendedRestaurants GetRecommendedRestaurants db = (db, Response (unwords topRestaurants))
+    where
+        topRestaurants = map (snd) $ take topRestaurantNumbers sortedRestaurants
+        sortedRestaurants = reverse $ Data.List.sort restaurantsPopularity
+        restaurantsPopularity = map (\r -> (getPopularity r defaultLocation, (name :: Restaurant -> String) r)) (restaurants db)
+        defaultLocation = Location{x=0, y=0}
+        topRestaurantNumbers = 3
