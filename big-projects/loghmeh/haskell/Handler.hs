@@ -1,18 +1,17 @@
 module Handler
 ( run ) where
 
+
 import qualified Data.ByteString.Lazy.Char8 as C
 import Control.Monad.State (State, evalState)
 
-import Restaurant
-import Food
-import Order
-import Location
 import DataBase
 import Command
 import CommandArgument
 import Response
 import Application
+
+
 
 type Scanner = State [C.ByteString]
 type SystemState = (DataBase, [Response])
@@ -33,8 +32,7 @@ runScript = do
     let database = getEmptyDataBase
     let systemState = foldl (\ss command -> changeSystemState ss (runCommand command (fst ss))) (database, []) commands
     let responses = (unlines $ map (\(Response r) -> r) (snd systemState))
-    let databaseState = (show (fst systemState) :: String)
-    return (responses ++ "\n\n\n\n" ++ databaseState)
+    return (responses ++ "\n\n\n\n")
 
 
 runCommand :: Command -> DataBase -> (DataBase, Response)

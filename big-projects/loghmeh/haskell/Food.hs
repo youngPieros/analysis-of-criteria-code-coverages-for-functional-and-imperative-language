@@ -13,7 +13,7 @@ data Food = Food { name :: String
                  , description :: String
                  , popularity :: Double
                  , price :: Double
-                 } | EmptyFood deriving (Show)
+                 } | EmptyFood
 
 instance Eq Food where
     EmptyFood == EmptyFood = True

@@ -12,7 +12,7 @@ import Data.Aeson
 
 data Location = Location { x :: Int
                          , y :: Int
-                         } deriving (Eq, Show)
+                         }
 
 instance ToJSON Location where
     toJSON (Location x y) = object ["x" .= x, "y" .= y]

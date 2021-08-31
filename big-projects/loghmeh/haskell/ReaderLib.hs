@@ -1,9 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 
 module ReaderLib
 ( Scanner(..)
-, bstr
 , line
 , many
 ) where

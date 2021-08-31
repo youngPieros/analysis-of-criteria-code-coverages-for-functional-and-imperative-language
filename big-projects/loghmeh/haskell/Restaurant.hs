@@ -22,7 +22,7 @@ data Restaurant = Restaurant { name :: String
                              , location :: Location
                              , menu :: [Food.Food]
                              }
-                  | EmptyRestaurant deriving (Show)
+                  | EmptyRestaurant
 
 instance Eq Restaurant where
     EmptyRestaurant == EmptyRestaurant = True

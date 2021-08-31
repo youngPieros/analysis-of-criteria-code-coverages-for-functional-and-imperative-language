@@ -22,7 +22,7 @@ import Order
 
 data DataBase = DataBase{ restaurants :: [Restaurant]
                         , orders :: [Order]
-                        } deriving (Show)
+                        }
 
 
 

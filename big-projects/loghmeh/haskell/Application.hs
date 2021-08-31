@@ -31,8 +31,8 @@ import Restaurant
 locationMapper :: LocationArgs -> Location
 locationMapper location = Location{x = xPos, y = yPos}
     where
-        yPos = (y :: LocationArgs -> Int) (location :: LocationArgs)
-        xPos = (x :: LocationArgs -> Int) (location :: LocationArgs)
+        yPos = (y :: LocationArgs -> Int) location
+        xPos = (x :: LocationArgs -> Int) location
 
 restaurantFoodMapper :: RestaurantFoodArgs -> Food
 restaurantFoodMapper food = Food{name=foodName, description=foodDescription, popularity=foodPopularity, price=foodPrice}

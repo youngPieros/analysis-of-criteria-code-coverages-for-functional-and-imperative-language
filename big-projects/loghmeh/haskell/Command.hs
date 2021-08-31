@@ -1,6 +1,3 @@
-{-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module Command
 ( Command(..)
 , getCommands
@@ -9,6 +6,7 @@ module Command
 
 import qualified Data.ByteString.Lazy.Char8 as C
 import Control.Monad.State (State, evalState)
+
 import Data.Maybe
 import Data.Aeson
 import Data.List

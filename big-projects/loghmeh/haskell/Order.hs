@@ -17,7 +17,7 @@ data Order = Order { user :: String
                    , restaurantName :: String
                    , basket :: Data.Map.Map String Int
                    }
-            | EmptyOrder deriving (Show)
+            | EmptyOrder
 
 instance Eq Order where
     EmptyOrder == EmptyOrder = True
