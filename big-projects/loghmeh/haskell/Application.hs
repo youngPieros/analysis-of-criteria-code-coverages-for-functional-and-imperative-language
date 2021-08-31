@@ -8,6 +8,7 @@ module Application
 , Application.getFood
 , addToCart
 , getCart
+, finalizeOrder
 ) where
 
 import qualified Data.ByteString.Lazy.Char8 as C
@@ -132,3 +133,13 @@ getCart GetCart db
     where
         basket = getUserBasket db defaultUser
         defaultUser = "IMAN"
+
+
+finalizeOrder :: Command -> DataBase -> (DataBase, Response)
+finalizeOrder FinalizeOrder db
+    | basket == EmptyOrder = (db, Response "there is no order")
+    | otherwise = (removeOrder db basket, Response (C.unpack . (encode :: Order -> C.ByteString) $ basket))
+    where
+        basket = getUserBasket db defaultUser
+        defaultUser = "IMAN"
+

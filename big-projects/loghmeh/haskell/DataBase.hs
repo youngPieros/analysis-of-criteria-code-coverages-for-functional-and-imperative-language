@@ -5,6 +5,7 @@ module DataBase
 , findFood
 , getUserBasket
 , updateOrder
+, removeOrder
 ) where
 
 
@@ -49,3 +50,8 @@ updateOrder :: DataBase -> Order -> DataBase
 updateOrder db order = DataBase{restaurants=(restaurants db), orders=updatedOrders}
     where
         updatedOrders = order:(filter (\o -> o /= order) (orders db))
+
+removeOrder :: DataBase -> Order -> DataBase
+removeOrder db order = DataBase{restaurants=(restaurants db), orders=updatedOrders}
+    where
+        updatedOrders = filter (\o -> o /= order) (orders db)
