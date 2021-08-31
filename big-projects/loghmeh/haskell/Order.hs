@@ -1,18 +1,31 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Order
 ( Order(..)
-, createOrder
+, emptyOrder
+, initOrder
+, addOrder
 ) where
+
+import GHC.Generics
+import Data.Aeson
 import Data.Map
 import Data.Maybe
 
 data Order = Order { user :: String
                    , restaurantName :: String
-                   , orders :: Data.Map.Map String Int
-                   } deriving (Show)
+                   , basket :: Data.Map.Map String Int
+                   }
+            | EmptyOrder deriving (Show, Generic)
 
+instance Eq Order where
+    EmptyOrder == EmptyOrder = True
+    EmptyOrder == Order _ _ _ = False
+    Order _ _ _ == EmptyOrder = False
+    o1 == o2 = Order.user o1 == Order.user o2
 
-createOrder :: String -> String -> Order
-createOrder user restaurantName = Order {user=user, restaurantName=restaurantName, orders=Data.Map.empty}
+instance ToJSON Order where
+    toEncoding = genericToEncoding defaultOptions
 
 --addFoodToOrder :: String -> Int -> Order -> Order
 --addFoodToOrder food number order = Order{user=(user order), restaurantName=(restaurantName order), orders=newOrders}
