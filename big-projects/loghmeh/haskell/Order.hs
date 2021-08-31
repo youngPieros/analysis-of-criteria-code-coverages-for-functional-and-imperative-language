@@ -6,9 +6,12 @@ module Order
 , addOrder
 ) where
 
+
 import Data.Aeson
 import Data.Map
 import Data.Maybe
+
+
 
 data Order = Order { user :: String
                    , restaurantName :: String
@@ -24,6 +27,7 @@ instance Eq Order where
 
 instance ToJSON Order where
     toJSON (Order user restaurantName basket) = object ["orders" .= basket]
+
 
 
 addOrder :: String -> Int -> Order -> Order
