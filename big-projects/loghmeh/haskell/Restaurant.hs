@@ -26,9 +26,8 @@ data Restaurant = Restaurant { name :: String
 
 instance Eq Restaurant where
     EmptyRestaurant == EmptyRestaurant = True
-    EmptyRestaurant == Restaurant _ _ _ _ = False
-    Restaurant _ _ _ _ == EmptyRestaurant = False
-    r1 == r2 = Restaurant.name r1 == Restaurant.name r2
+    Restaurant n1 _ _ _ == Restaurant n2 _ _ _ = n1 == n2
+    _ == _ = False
 
 instance ToJSON Restaurant where
     toJSON (Restaurant name description location menu) =

@@ -17,9 +17,8 @@ data Food = Food { name :: String
 
 instance Eq Food where
     EmptyFood == EmptyFood = True
-    EmptyFood == Food _ _ _ _ = False
-    Food _ _ _ _ == EmptyFood = False
-    f1 == f2 = name f1 == name f2
+    Food n1 _ _ _ == Food n2 _ _ _ = n1 == n2
+    _ == _ = False
 
 instance ToJSON Food where
     toJSON (Food name description popularity price) =

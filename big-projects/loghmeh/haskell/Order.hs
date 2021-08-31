@@ -21,9 +21,8 @@ data Order = Order { user :: String
 
 instance Eq Order where
     EmptyOrder == EmptyOrder = True
-    EmptyOrder == Order _ _ _ = False
-    Order _ _ _ == EmptyOrder = False
-    o1 == o2 = Order.user o1 == Order.user o2
+    Order u1 _ _ == Order u2 _ _ = u1 == u2
+    _ == _ = False
 
 instance ToJSON Order where
     toJSON (Order user restaurantName basket) = object ["orders" .= basket]
