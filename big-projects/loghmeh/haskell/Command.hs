@@ -16,30 +16,40 @@ import ReaderLib
 import CommandArgument
 
 
-getAddRestaurantArgs :: String -> AddRestaurantArgs
-getAddRestaurantArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe AddRestaurantArgs)
+getAddRestaurantArgs :: String -> Command
+getAddRestaurantArgs json = if Data.Maybe.isJust args then AddRestaurant (Data.Maybe.fromJust args) else BadCommand
+    where
+        args = (decode (C.pack json) :: Maybe AddRestaurantArgs)
 
-getAddFoodArgs :: String -> AddFoodArgs
-getAddFoodArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe AddFoodArgs)
+getAddFoodArgs :: String -> Command
+getAddFoodArgs json = if Data.Maybe.isJust args then AddFood (Data.Maybe.fromJust args) else BadCommand
+    where
+        args = (decode (C.pack json) :: Maybe AddFoodArgs)
 
-getGetRestaurantArgs :: String -> GetRestaurantArgs
-getGetRestaurantArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe GetRestaurantArgs)
+getGetRestaurantArgs :: String -> Command
+getGetRestaurantArgs json = if Data.Maybe.isJust args then GetRestaurant (Data.Maybe.fromJust args) else BadCommand
+    where
+        args = (decode (C.pack json) :: Maybe GetRestaurantArgs)
 
-getGetFoodArgs :: String -> GetFoodArgs
-getGetFoodArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe GetFoodArgs)
+getGetFoodArgs :: String -> Command
+getGetFoodArgs json = if Data.Maybe.isJust args then GetFood (Data.Maybe.fromJust args) else BadCommand
+    where
+        args = (decode (C.pack json) :: Maybe GetFoodArgs)
 
-getAddToCartArgs :: String -> AddToCartArgs
-getAddToCartArgs json = Data.Maybe.fromJust (decode (C.pack json) :: Maybe AddToCartArgs)
+getAddToCartArgs :: String -> Command
+getAddToCartArgs json = if Data.Maybe.isJust args then AddToCart (Data.Maybe.fromJust args) else BadCommand
+    where
+        args = (decode (C.pack json) :: Maybe AddToCartArgs)
 
 
 selectCommand :: String -> String -> Command
 selectCommand commandType args
-    | commandType == "addRestaurant" = AddRestaurant (getAddRestaurantArgs args)
-    | commandType == "addFood" = AddFood (getAddFoodArgs args)
+    | commandType == "addRestaurant" = getAddRestaurantArgs args
+    | commandType == "addFood" = getAddFoodArgs args
     | commandType == "getRestaurants" = GetRestaurants
-    | commandType == "getRestaurant" = GetRestaurant (getGetRestaurantArgs args)
-    | commandType == "getFood" = GetFood (getGetFoodArgs args)
-    | commandType == "addToCart" = AddToCart (getAddToCartArgs args)
+    | commandType == "getRestaurant" = getGetRestaurantArgs args
+    | commandType == "getFood" = getGetFoodArgs args
+    | commandType == "addToCart" = getAddToCartArgs args
     | commandType == "getCart" = GetCart
     | commandType == "finalizeOrder" = FinalizeOrder
     | commandType == "getRecommendedRestaurants" = GetRecommendedRestaurants
