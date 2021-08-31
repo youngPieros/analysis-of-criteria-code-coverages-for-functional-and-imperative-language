@@ -4,8 +4,9 @@ module Application
 ( addRestaurant
 , addFood
 , getRestaurants
-, getRestaurant
-, getFood
+, Application.getRestaurant
+, Application.getFood
+, addToCart
 ) where
 
 import qualified Data.ByteString.Lazy.Char8 as C
@@ -13,6 +14,7 @@ import Data.List
 import Data.Aeson
 import Data.Maybe
 import Food
+import Order
 import Location
 import DataBase
 import Response
@@ -104,5 +106,20 @@ getFood (GetFood args) database = (database, Response response)
         restaurantMenu = if isRestaurantFound then (menu :: Restaurant -> [Food]) (Data.Maybe.fromJust restaurant) else []
         isRestaurantFound = Data.Maybe.isJust restaurant
         restaurant = Data.List.find (\rest -> (name :: Restaurant -> String) rest == restName) (restaurants database)
-        fName = ((foodName :: GetFoodArgs -> String) args) :: String
+        fName = (foodName :: GetFoodArgs -> String) args
         restName = (restaurantName :: GetFoodArgs -> String) args
+
+
+addToCart :: Command -> DataBase -> (DataBase, Response)
+addToCart (AddToCart args) db
+    | basket /= EmptyOrder && (restaurantName :: Order -> String) basket /= restName = (db, Response "you can not order food from different restaurants")
+    | food == EmptyFood = (db, Response "there is not this order")
+    | basket == EmptyOrder = (updateOrder db (initOrder defaultUser restName fName 1), Response "")
+    | otherwise = (updateOrder db (addOrder fName 1 basket), Response "")
+    where
+        basket = getUserBasket db defaultUser
+        food = findFood db restName fName
+        fName = (foodName :: AddToCartArgs -> String) args
+        restName = (restaurantName :: AddToCartArgs -> String) args
+        defaultUser = "IMAN"
+
