@@ -2,7 +2,6 @@
 
 module Order
 ( Order(..)
-, emptyOrder
 , initOrder
 , addOrder
 ) where
@@ -27,12 +26,17 @@ instance Eq Order where
 instance ToJSON Order where
     toEncoding = genericToEncoding defaultOptions
 
---addFoodToOrder :: String -> Int -> Order -> Order
---addFoodToOrder food number order = Order{user=(user order), restaurantName=(restaurantName order), orders=newOrders}
--- where
---    newOrders = Data.Map.insert food orderNumber (orders order)
---    orderNumber = number + (if Data.Maybe.isJust currentOrder then Data.Maybe.fromJust currentOrder else 0)
---    currentOrder = Data.Map.lookup food
---    currentOrders = orders order
---
---
+
+
+addOrder :: String -> Int -> Order -> Order
+addOrder food number order = Order{user=(user order), restaurantName=(restaurantName order), basket=newOrders}
+ where
+    newOrders = Data.Map.insert food orderNumber currentOrders
+    orderNumber = number + (if Data.Maybe.isJust currentOrder then Data.Maybe.fromJust currentOrder else 0)
+    currentOrder = Data.Map.lookup food currentOrders
+    currentOrders = basket order
+
+initOrder :: String -> String -> String -> Int -> Order
+initOrder user restaurantName food number = Order{user=user, restaurantName=restaurantName, basket=initializedBasket}
+    where
+        initializedBasket = Data.Map.fromList [(food, number)]
