@@ -1,20 +1,19 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Food
 ( Food(..)
 ) where
 
 
-import GHC.Generics
 import Data.Aeson
+
 
 
 data Food = Food { name :: String
                  , description :: String
                  , popularity :: Double
                  , price :: Double
-                 } | EmptyFood deriving (Show, Generic)
-
+                 } | EmptyFood deriving (Show)
 
 instance Eq Food where
     EmptyFood == EmptyFood = True
@@ -23,4 +22,6 @@ instance Eq Food where
     f1 == f2 = name f1 == name f2
 
 instance ToJSON Food where
-    toEncoding = genericToEncoding defaultOptions
+    toJSON (Food name description popularity price) =
+        object ["name" .= name, "description" .= description, "popularity" .= popularity, "price" .= price]
+
