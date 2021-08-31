@@ -8,7 +8,7 @@ import Data.Maybe
 data Order = Order { user :: String
                    , restaurantName :: String
                    , orders :: Data.Map.Map String Int
-                   }
+                   } deriving (Show)
 
 
 createOrder :: String -> String -> Order
