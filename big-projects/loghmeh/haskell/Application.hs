@@ -7,6 +7,7 @@ module Application
 , Application.getRestaurant
 , Application.getFood
 , addToCart
+, getCart
 ) where
 
 import qualified Data.ByteString.Lazy.Char8 as C
@@ -123,3 +124,11 @@ addToCart (AddToCart args) db
         restName = (restaurantName :: AddToCartArgs -> String) args
         defaultUser = "IMAN"
 
+
+getCart :: Command -> DataBase -> (DataBase, Response)
+getCart GetCart db
+    | basket == EmptyOrder = (db, Response "empty order!")
+    | otherwise = (db, Response (C.unpack . (encode :: Order -> C.ByteString) $ basket))
+    where
+        basket = getUserBasket db defaultUser
+        defaultUser = "IMAN"

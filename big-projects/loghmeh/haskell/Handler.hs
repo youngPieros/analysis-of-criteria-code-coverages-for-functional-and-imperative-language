@@ -45,6 +45,7 @@ runCommand command database = case command of
     GetRestaurant args -> Application.getRestaurant (GetRestaurant args) database
     GetFood args -> Application.getFood (GetFood args) database
     AddToCart args -> addToCart (AddToCart args) database
+    GetCart -> getCart GetCart database
     BadCommand -> (database, Response "bad command!!!")
 
 
