@@ -32,7 +32,9 @@ runScript = do
     commands <- getCommands
     let database = getEmptyDataBase
     let systemState = foldl (\ss command -> changeSystemState ss (runCommand command (fst ss))) (database, []) commands
-    return (unlines $ map (\(Response r) -> r) (snd systemState))
+    let responses = (unlines $ map (\(Response r) -> r) (snd systemState))
+    let databaseState = (show (fst systemState) :: String)
+    return (responses ++ "\n\n\n\n" ++ databaseState)
 
 
 runCommand :: Command -> DataBase -> (DataBase, Response)
@@ -40,8 +42,9 @@ runCommand command database = case command of
     AddRestaurant args -> addRestaurant (AddRestaurant args) database
     AddFood args -> addFood (AddFood args) database
     GetRestaurants -> getRestaurants GetRestaurants database
-    GetRestaurant args -> getRestaurant (GetRestaurant args) database
-    GetFood args -> getFood (GetFood args) database
+    GetRestaurant args -> Application.getRestaurant (GetRestaurant args) database
+    GetFood args -> Application.getFood (GetFood args) database
+    AddToCart args -> addToCart (AddToCart args) database
     BadCommand -> (database, Response "bad command!!!")
 
 
