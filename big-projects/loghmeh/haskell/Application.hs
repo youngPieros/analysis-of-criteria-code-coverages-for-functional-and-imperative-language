@@ -3,6 +3,7 @@
 module Application
 ( addRestaurant
 , addFood
+, getRestaurants
 ) where
 
 import Food
@@ -71,3 +72,10 @@ addFood (AddFood args) db = (database, response)
         (updated, rests) = findAndDo ((flip addFoodToRestaurant) food) (\res -> restaurant == ((name :: Restaurant -> String) res)) (restaurants db)
         food = foodMapper args
         restaurant = (restaurantName :: AddFoodArgs -> String) args
+
+
+getRestaurants :: Command -> DataBase -> (DataBase, Response)
+getRestaurants GetRestaurants database = (database, Response response)
+    where
+        response = unwords $ restaurantNames
+        restaurantNames = map (\restaurant -> (name :: Restaurant -> String) restaurant) (restaurants database)

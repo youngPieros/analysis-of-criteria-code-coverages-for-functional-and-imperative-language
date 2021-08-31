@@ -39,6 +39,7 @@ runCommand :: Command -> DataBase -> (DataBase, Response)
 runCommand command database = case command of
     AddRestaurant args -> addRestaurant (AddRestaurant args) database
     AddFood args -> addFood (AddFood args) database
+    GetRestaurants -> getRestaurants GetRestaurants database
     BadCommand -> (database, Response "bad command!!!")
 
 
