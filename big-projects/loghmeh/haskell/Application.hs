@@ -93,10 +93,11 @@ getRestaurants GetRestaurants database = (database, Response response)
 
 
 getRestaurant :: Command -> DataBase -> (DataBase, Response)
-getRestaurant (GetRestaurant args) database = (database, Response response)
+getRestaurant (GetRestaurant args) database
+    | restaurant == EmptyRestaurant = (database, Response ("there is not " ++ restaurantName ++ " restaurant"))
+    | otherwise = (database, Response (C.unpack . (encode :: Restaurant -> C.ByteString) $ restaurant))
     where
-        response = if Data.Maybe.isJust restaurant then (C.unpack . (encode :: Restaurant -> C.ByteString) $ (Data.Maybe.fromJust restaurant)) else ("there is not " ++ restaurantName ++ " restaurant")
-        restaurant = Data.List.find (\rest -> (name :: Restaurant -> String) rest == restaurantName) (restaurants database)
+        restaurant = DataBase.getRestaurant database restaurantName
         restaurantName = (name :: GetRestaurantArgs -> String) args
 
 
