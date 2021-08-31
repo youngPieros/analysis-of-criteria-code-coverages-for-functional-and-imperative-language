@@ -1,7 +1,6 @@
 module DataBase
 ( DataBase(..)
 , getEmptyDataBase
-, createDB
 , getRestaurant
 , findFood
 , getUserBasket
