@@ -101,14 +101,11 @@ getRestaurant (GetRestaurant args) database = (database, Response response)
 
 
 getFood :: Command -> DataBase -> (DataBase, Response)
-getFood (GetFood args) database = (database, Response response)
+getFood (GetFood args) database
+    | food == EmptyFood = (database, Response "there is not this food")
+    | otherwise = (database, Response (C.unpack . (encode :: Food -> C.ByteString) $ food))
     where
-        response = if isFoodFound then C.unpack . (encode :: Food -> C.ByteString) $ (Data.Maybe.fromJust food) else "there is not this food"
-        isFoodFound = Data.Maybe.isJust food
-        food = Data.List.find (\f -> (name :: Food -> String) f == fName) restaurantMenu
-        restaurantMenu = if isRestaurantFound then (menu :: Restaurant -> [Food]) (Data.Maybe.fromJust restaurant) else []
-        isRestaurantFound = Data.Maybe.isJust restaurant
-        restaurant = Data.List.find (\rest -> (name :: Restaurant -> String) rest == restName) (restaurants database)
+        food = findFood database restName fName
         fName = (foodName :: GetFoodArgs -> String) args
         restName = (restaurantName :: GetFoodArgs -> String) args
 
