@@ -5,6 +5,7 @@ module Application
 , addFood
 , getRestaurants
 , getRestaurant
+, getFood
 ) where
 
 import qualified Data.ByteString.Lazy.Char8 as C
@@ -92,3 +93,16 @@ getRestaurant (GetRestaurant args) database = (database, Response response)
         response = if Data.Maybe.isJust restaurant then (C.unpack . (encode :: Restaurant -> C.ByteString) $ (Data.Maybe.fromJust restaurant)) else ("there is not " ++ restaurantName ++ " restaurant")
         restaurant = Data.List.find (\rest -> (name :: Restaurant -> String) rest == restaurantName) (restaurants database)
         restaurantName = (name :: GetRestaurantArgs -> String) args
+
+
+getFood :: Command -> DataBase -> (DataBase, Response)
+getFood (GetFood args) database = (database, Response response)
+    where
+        response = if isFoodFound then C.unpack . (encode :: Food -> C.ByteString) $ (Data.Maybe.fromJust food) else "there is not this food"
+        isFoodFound = Data.Maybe.isJust food
+        food = Data.List.find (\f -> (name :: Food -> String) f == fName) restaurantMenu
+        restaurantMenu = if isRestaurantFound then (menu :: Restaurant -> [Food]) (Data.Maybe.fromJust restaurant) else []
+        isRestaurantFound = Data.Maybe.isJust restaurant
+        restaurant = Data.List.find (\rest -> (name :: Restaurant -> String) rest == restName) (restaurants database)
+        fName = ((foodName :: GetFoodArgs -> String) args) :: String
+        restName = (restaurantName :: GetFoodArgs -> String) args

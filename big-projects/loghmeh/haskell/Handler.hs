@@ -41,6 +41,7 @@ runCommand command database = case command of
     AddFood args -> addFood (AddFood args) database
     GetRestaurants -> getRestaurants GetRestaurants database
     GetRestaurant args -> getRestaurant (GetRestaurant args) database
+    GetFood args -> getFood (GetFood args) database
     BadCommand -> (database, Response "bad command!!!")
 
 
