@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Restaurant
 ( Restaurant(..)
@@ -7,7 +7,6 @@ module Restaurant
 ) where
 
 
-import GHC.Generics
 import Data.Aeson
 import Data.Maybe
 import Data.List
@@ -16,12 +15,13 @@ import qualified Food
 import Location
 
 
+
 data Restaurant = Restaurant { name :: String
                              , description :: String
                              , location :: Location
                              , menu :: [Food.Food]
                              }
-                  | EmptyRestaurant deriving (Show, Generic)
+                  | EmptyRestaurant deriving (Show)
 
 instance Eq Restaurant where
     EmptyRestaurant == EmptyRestaurant = True
@@ -30,7 +30,8 @@ instance Eq Restaurant where
     r1 == r2 = Restaurant.name r1 == Restaurant.name r2
 
 instance ToJSON Restaurant where
-    toEncoding = genericToEncoding defaultOptions
+    toJSON (Restaurant name description location menu) =
+        object ["name" .= name, "description" .= description, "location" .= location, "menu" .= menu]
 
 
 

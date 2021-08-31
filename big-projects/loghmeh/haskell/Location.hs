@@ -1,20 +1,22 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Location
 ( Location(..)
 , distance
 ) where
 
-import GHC.Generics
+
 import Data.Aeson
+
+
 
 data Location = Location { x :: Int
                          , y :: Int
-                         } deriving (Eq, Show, Generic)
-
+                         } deriving (Eq, Show)
 
 instance ToJSON Location where
-    toEncoding = genericToEncoding defaultOptions
+    toJSON (Location x y) = object ["x" .= x, "y" .= y]
+
 
 
 distance :: Location -> Location -> Double
