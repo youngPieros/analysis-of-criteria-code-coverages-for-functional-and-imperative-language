@@ -42,13 +42,12 @@ instance FromJSON AddRestaurantArgs where
 
 
 data AddFoodArgs = AddFoodArgs { name :: String
-                                   , restaurant :: String
-                                   , description :: String
-                                   , popularity :: Double
-                                   , price :: Double
-                                    } deriving (Eq, Show, Read)
-instance FromJSON AddFoodArgs where
-    parseJSON (Object v) = AddFoodArgs <$> v .: "name" <*> v .: "restaurant" <*> v .: "description" <*> v .: "popularity" <*> v .: "price"
+                               , restaurantName :: String
+                               , description :: String
+                               , popularity :: Double
+                               , price :: Double
+                                } deriving (Eq, Show, Read)
+
 
 data GetRestaurantArgs = GetRestaurantArgs { name :: String } deriving (Eq, Show, Read)
 instance FromJSON GetRestaurantArgs where
