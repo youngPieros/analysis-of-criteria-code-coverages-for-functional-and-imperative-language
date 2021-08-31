@@ -4,6 +4,7 @@ module Restaurant
 ( Restaurant(..)
 , getFood
 , getPopularity
+, addFood
 ) where
 
 
@@ -52,3 +53,7 @@ getFood restaurant foodName
     where
         food = Data.List.find (\f -> (Food.name :: Food.Food -> String) f == foodName) (menu restaurant)
 
+addFood :: Restaurant -> Food.Food -> Restaurant
+addFood restaurant food = Restaurant{name=(name restaurant), description=(description restaurant), location=(location restaurant), menu=updatedMenu}
+    where
+        updatedMenu = food:(menu restaurant)

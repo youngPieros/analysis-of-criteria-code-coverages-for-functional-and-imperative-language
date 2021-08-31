@@ -39,8 +39,8 @@ runScript = do
 
 runCommand :: Command -> DataBase -> (DataBase, Response)
 runCommand command database = case command of
-    AddRestaurant args -> addRestaurant (AddRestaurant args) database
-    AddFood args -> addFood (AddFood args) database
+    AddRestaurant args -> Application.addRestaurant (AddRestaurant args) database
+    AddFood args -> Application.addFood (AddFood args) database
     GetRestaurants -> getRestaurants GetRestaurants database
     GetRestaurant args -> Application.getRestaurant (GetRestaurant args) database
     GetFood args -> Application.getFood (GetFood args) database

@@ -1,8 +1,8 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 
 module Application
-( addRestaurant
-, addFood
+( Application.addRestaurant
+, Application.addFood
 , getRestaurants
 , Application.getRestaurant
 , Application.getFood
@@ -12,10 +12,12 @@ module Application
 , getRecommendedRestaurants
 ) where
 
+
 import qualified Data.ByteString.Lazy.Char8 as C
 import Data.List
 import Data.Aeson
 import Data.Maybe
+
 import Food
 import Order
 import Location
@@ -24,10 +26,6 @@ import Response
 import CommandArgument
 import Restaurant
 
-
-
-findAndDo :: (a -> b) -> (a -> Bool) -> [a] -> ([b], [a])
-findAndDo f p list = (map f (filter p list), filter (\x -> not(p x)) list)
 
 
 locationMapper :: LocationArgs -> Location
@@ -55,34 +53,24 @@ foodMapper food = Food{name=foodName, description=foodDescription, popularity=fo
 
 
 addRestaurant :: Command -> DataBase -> (DataBase, Response)
-addRestaurant (AddRestaurant (AddRestaurantArgs name description location menu)) db = (database, Response response)
+addRestaurant (AddRestaurant (AddRestaurantArgs name description location menu)) db
+    | elem restaurant (restaurants db) = (db, Response ("there is " ++ name ++ " already in restaurants"))
+    | otherwise = (DataBase.addRestaurant db restaurant, Response "")
     where
-        response = if isRestaurantAlreadyInDB then ("there is " ++ name ++ " already in restaurants") else ""
-        database = if isRestaurantAlreadyInDB then db else DataBase{restaurants=(restaurant:restaurants db), orders=(orders db)}
-        isRestaurantAlreadyInDB = elem restaurant (restaurants db)
         restaurant = Restaurant{name=name, description=description, location=restaurantLocation, menu=restaurantMenu}
         restaurantMenu = map restaurantFoodMapper menu
         restaurantLocation = locationMapper location
 
 
-addFoodToRestaurant :: Restaurant -> Food  -> (Restaurant, Response)
-addFoodToRestaurant restaurant food = (rest, Response response)
-    where
-        rest = Restaurant{name=restaurantName, description=restaurantDescription, location=restaurantLocation, menu=newMenu}
-        restaurantName = (name :: Restaurant -> String) restaurant
-        restaurantDescription = (description :: Restaurant -> String) restaurant
-        restaurantLocation = (location :: Restaurant -> Location) restaurant
-        response = if isFoodAlreadyInRestaurant then ("there is " ++ ((name :: Food -> String) food) ++ " already in " ++ ((name :: Restaurant -> String) restaurant)) else ""
-        newMenu = ((menu :: Restaurant -> [Food])restaurant) ++ (if isFoodAlreadyInRestaurant then [] else [food])
-        isFoodAlreadyInRestaurant = elem food ((menu :: Restaurant -> [Food])restaurant)
 addFood :: Command -> DataBase -> (DataBase, Response)
-addFood (AddFood args) db = (database, response)
+addFood (AddFood args) db
+    | restaurant == EmptyRestaurant = (db, Response ("there is not " ++ restName ++ " restaurant"))
+    | elem food ((menu :: Restaurant -> [Food]) restaurant) = (db, Response ("there is " ++ ((name :: Food -> String) food) ++ " already in " ++ restName))
+    | otherwise = (updateRestaurant db (Restaurant.addFood restaurant food), Response "")
     where
-        response = if length updated > 0 then snd (updated !! 0) else Response ("there is not " ++ restaurant ++ " restaurant")
-        database = DataBase{restaurants=(rests ++ (map (fst) updated)), orders=(orders db)}
-        (updated, rests) = findAndDo ((flip addFoodToRestaurant) food) (\res -> restaurant == ((name :: Restaurant -> String) res)) (restaurants db)
+        restaurant = DataBase.getRestaurant db restName
         food = foodMapper args
-        restaurant = (restaurantName :: AddFoodArgs -> String) args
+        restName = (restaurantName :: AddFoodArgs -> String) args
 
 
 getRestaurants :: Command -> DataBase -> (DataBase, Response)

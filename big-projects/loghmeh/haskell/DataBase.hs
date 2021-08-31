@@ -2,6 +2,8 @@ module DataBase
 ( DataBase(..)
 , getEmptyDataBase
 , getRestaurant
+, addRestaurant
+, updateRestaurant
 , findFood
 , getUserBasket
 , updateOrder
@@ -33,6 +35,14 @@ getRestaurant db restaurantName
     | otherwise = EmptyRestaurant
     where
         restaurant = Data.List.find (\restaurant -> (Restaurant.name :: Restaurant -> String) restaurant == restaurantName) (restaurants db)
+
+addRestaurant :: DataBase -> Restaurant -> DataBase
+addRestaurant db restaurant = DataBase{restaurants=(restaurant:(restaurants db)), orders=(orders db)}
+
+updateRestaurant :: DataBase -> Restaurant -> DataBase
+updateRestaurant db restaurant = DataBase{restaurants=updatedRestaurants, orders=(orders db)}
+    where
+        updatedRestaurants = restaurant:(filter (\r -> r /= restaurant) (restaurants db))
 
 findFood :: DataBase -> String -> String -> Food
 findFood db restaurantName foodName = getFood restaurant foodName
