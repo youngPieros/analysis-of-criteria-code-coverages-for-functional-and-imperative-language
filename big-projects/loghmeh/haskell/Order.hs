@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Order
 ( Order(..)
@@ -6,7 +6,6 @@ module Order
 , addOrder
 ) where
 
-import GHC.Generics
 import Data.Aeson
 import Data.Map
 import Data.Maybe
@@ -15,7 +14,7 @@ data Order = Order { user :: String
                    , restaurantName :: String
                    , basket :: Data.Map.Map String Int
                    }
-            | EmptyOrder deriving (Show, Generic)
+            | EmptyOrder deriving (Show)
 
 instance Eq Order where
     EmptyOrder == EmptyOrder = True
@@ -24,8 +23,7 @@ instance Eq Order where
     o1 == o2 = Order.user o1 == Order.user o2
 
 instance ToJSON Order where
-    toEncoding = genericToEncoding defaultOptions
-
+    toJSON (Order user restaurantName basket) = object ["orders" .= basket]
 
 
 addOrder :: String -> Int -> Order -> Order
