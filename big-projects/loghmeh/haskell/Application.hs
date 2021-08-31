@@ -4,8 +4,13 @@ module Application
 ( addRestaurant
 , addFood
 , getRestaurants
+, getRestaurant
 ) where
 
+import qualified Data.ByteString.Lazy.Char8 as C
+import Data.List
+import Data.Aeson
+import Data.Maybe
 import Food
 import Location
 import DataBase
@@ -79,3 +84,11 @@ getRestaurants GetRestaurants database = (database, Response response)
     where
         response = unwords $ restaurantNames
         restaurantNames = map (\restaurant -> (name :: Restaurant -> String) restaurant) (restaurants database)
+
+
+getRestaurant :: Command -> DataBase -> (DataBase, Response)
+getRestaurant (GetRestaurant args) database = (database, Response response)
+    where
+        response = if Data.Maybe.isJust restaurant then (C.unpack . (encode :: Restaurant -> C.ByteString) $ (Data.Maybe.fromJust restaurant)) else ("there is not " ++ restaurantName ++ " restaurant")
+        restaurant = Data.List.find (\rest -> (name :: Restaurant -> String) rest == restaurantName) (restaurants database)
+        restaurantName = (name :: GetRestaurantArgs -> String) args
