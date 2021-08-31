@@ -2,11 +2,14 @@
 
 module Restaurant
 ( Restaurant(..)
+, getFood
 ) where
 
 
 import GHC.Generics
 import Data.Aeson
+import Data.Maybe
+import Data.List
 
 import qualified Food
 import Location
@@ -28,5 +31,13 @@ instance Eq Restaurant where
 instance ToJSON Restaurant where
     toEncoding = genericToEncoding defaultOptions
 
-getPopularity :: Restaurant -> Double
-getPopularity restaurant = 0.0
+
+
+getFood :: Restaurant -> String -> Food.Food
+getFood EmptyRestaurant _ = Food.EmptyFood
+getFood restaurant foodName
+    | Data.Maybe.isJust food = Data.Maybe.fromJust food
+    | otherwise = Food.EmptyFood
+    where
+        food = Data.List.find (\f -> (Food.name :: Food.Food -> String) f == foodName) (menu restaurant)
+
