@@ -10,7 +10,9 @@ import Order
 import Location
 import DataBase
 import Command
+import CommandArgument
 import Response
+import Application
 
 type Scanner = State [C.ByteString]
 type SystemState = (DataBase, [Response])
@@ -34,7 +36,9 @@ runScript = do
 
 
 runCommand :: Command -> DataBase -> (DataBase, Response)
-runCommand command database = (database, Response "empty response")
+runCommand command database = case command of
+    AddRestaurant args -> addRestaurant (AddRestaurant args) database
+    BadCommand -> (database, Response "bad command!!!")
 
 
 run :: IO ()

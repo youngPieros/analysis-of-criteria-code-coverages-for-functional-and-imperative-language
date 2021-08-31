@@ -3,6 +3,8 @@
 
 module CommandArgument
 ( AddRestaurantArgs(..)
+, LocationArgs(..)
+, RestaurantFoodArgs(..)
 , AddFoodArgs(..)
 , GetRestaurantArgs(..)
 , GetFoodArgs(..)
@@ -30,10 +32,10 @@ instance FromJSON RestaurantFoodArgs where
     parseJSON _          = mzero
 
 data AddRestaurantArgs = AddRestaurantArgs { name :: String
-                                               , description :: String
-                                               , location :: LocationArgs
-                                               , menu :: [RestaurantFoodArgs]
-                                               } deriving (Eq, Show, Read)
+                                           , description :: String
+                                           , location :: LocationArgs
+                                           , menu :: [RestaurantFoodArgs]
+                                           } deriving (Eq, Show, Read)
 instance FromJSON AddRestaurantArgs where
     parseJSON (Object v) = AddRestaurantArgs <$> v .: "name" <*> v .: "description" <*> v .: "location" <*> v .: "menu"
     parseJSON _          = mzero
