@@ -64,7 +64,6 @@ public class RestaurantInterface {
         JSONObject jsonObject = new JSONObject(jsonString);
         foodName = jsonObject.getString("foodName");
         restaurantName = jsonObject.getString("restaurantName");
-        System.out.println(restaurantName + " " + foodName);
         restaurantManager.getFood(restaurantName, foodName);
     }
 

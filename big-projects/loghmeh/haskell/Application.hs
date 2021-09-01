@@ -102,7 +102,7 @@ getFood (GetFood args) database
 
 addToCart :: Command -> DataBase -> (DataBase, Response)
 addToCart (AddToCart args) db
-    | basket /= EmptyOrder && (restaurantName :: Order -> String) basket /= restName = (db, Response "you can not order food from different restaurants")
+    | basket /= EmptyOrder && (restaurantName :: Order -> String) basket /= restName = (db, Response "you can't order food from different restaurants")
     | food == EmptyFood = (db, Response "there is not this order")
     | basket == EmptyOrder = (updateOrder db (initOrder defaultUser restName fName 1), Response "")
     | otherwise = (updateOrder db (addOrder fName 1 basket), Response "")
@@ -126,7 +126,7 @@ getCart GetCart db
 finalizeOrder :: Command -> DataBase -> (DataBase, Response)
 finalizeOrder FinalizeOrder db
     | basket == EmptyOrder = (db, Response "there is no order")
-    | otherwise = (removeOrder db basket, Response (toDTO basket))
+    | otherwise = (removeOrder db basket, Response (toDTO basket ++ "\nYour order has been successfully registered"))
     where
         basket = getUserBasket db defaultUser
         defaultUser = "IMAN"

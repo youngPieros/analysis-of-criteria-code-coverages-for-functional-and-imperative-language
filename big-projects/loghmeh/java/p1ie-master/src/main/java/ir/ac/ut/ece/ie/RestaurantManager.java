@@ -29,7 +29,9 @@ public class RestaurantManager {
     public void getRestaurants()
     {
         for (RestaurantInfo restaurantInfo : restaurants)
-            System.out.println(restaurantInfo.getName());
+            System.out.print(restaurantInfo.getName() + " ");
+        if (restaurants.size() > 0)
+            System.out.println();
     }
 
     public void getRestaurant(String name)
@@ -109,7 +111,8 @@ public class RestaurantManager {
             if (popularRestaurants[i] == null || popularRestaurants[i].equals(""))
                 return;
             else
-                System.out.println(popularRestaurants[i]);
+                System.out.print(popularRestaurants[i] + " ");
+        System.out.println();
     }
 
 }
