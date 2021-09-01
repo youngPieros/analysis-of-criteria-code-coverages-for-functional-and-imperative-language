@@ -118,7 +118,7 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
 
       (java -jar ./jacococli.jar report ./jacoco.exec --html ../../report/$java_project --sourcefiles ./src/main/java/ --classfiles ./target/classes) |& cat >> ../../log
       echo "$java_project was compiled and ran successfully and report is generated"
-      cd ../../../../..
+      cd ../..
     fi
   done
   cd ../../..
