@@ -17,6 +17,8 @@ ignore_run_testcases=false
 test_generator_execution_successfully=true
 is_batch_testcases=false
 testcases=()
+haskell_reports=(hpc_index.html hpc_index_alt.html hpc_index_exp.html hpc_index_fun.html)
+
 
 
 function help() {
@@ -137,21 +139,6 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   mkdir -p ./bin/$main_folder/haskell
   cp ./repository/$main_folder/haskell/* ./bin/$main_folder/haskell
   cd ./bin/$main_folder/haskell
-  if [[ -e Main ]]; then
-    rm Main
-  fi
-  if [[ -e Main.hi ]]; then
-    rm Main.hi
-  fi
-  if [[ -e Main.o ]]; then
-    rm Main.o
-  fi
-  if [[ -d .hpc ]]; then
-    rm -rf .hpc
-  fi
-  if [[ -e Main.tix ]]; then
-    rm -rf Main.tix
-  fi
   ghc -fhpc Main &>../haskell_compile_log && haskell_compile_successfully=true
   if [[ $haskell_compile_successfully = true ]]; then
     echo "* haskell compiled successfully"
@@ -259,34 +246,34 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
     echo "# Error: failed in execute haskell program. check ./bin/$main_folder/haskell_execution_log"
     exit 1
   fi
-
-  hpc report Main > reportfile
-  cd ..
-  mkdir -p report
-  cp ../../resources/haskell/haskell-report-resources.zip report
-  cd report
-  if [[ -d haskell-report-resources ]]; then
-    rm -rf haskell-report-resources
-  fi
-  unzip haskell-report-resources.zip |& cat >> ../log
-  rm haskell-report-resources.zip
-  cd ../../../resources/haskell/
-  python3 haskell_html_report_generator.py < ../../bin/$main_folder/haskell/reportfile > ../../bin/$main_folder/report/h_report.html
-  cd ../..
+  temp_out=$(hpc markup Main)
+  mkdir -p ../report
+  cp *.html ../report
+  cd ../report
+  cp ../../../resources/haskell/haskell_html_report_generator.py ./
+  for h_report in ${haskell_reports[@]}; do
+    python3 haskell_html_report_generator.py $h_report
+  done
+  rm haskell_html_report_generator.py
+  cd ../../..
 fi
 
 # check ignoring generating reports
 if [[ ($run_haskell = true && $run_java = true) || $run_java_haskell = true ]]; then
   cd ./bin/$main_folder/report
-  cat h_report.html >> index.html
-  firefox index.html &
+  for h_report in ${haskell_reports[@]}; do
+    cat index.html $h_report > temp
+    cat temp > $h_report
+    rm temp
+  done
+  cp hpc_index.html index.html
 elif [[ $run_haskell = true ]]; then
   cd ./bin/$main_folder/report
-  cp h_report.html index.html
-  firefox index.html &
+  cp hpc_index.html index.html
 elif [[ $run_java = true ]]; then
   cd ./bin/$main_folder/report
-  firefox index.html &
 fi
 echo
 echo "**** report is completed"
+firefox index.html &
+exit 0
