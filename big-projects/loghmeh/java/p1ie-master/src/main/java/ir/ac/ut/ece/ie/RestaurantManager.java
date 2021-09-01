@@ -106,7 +106,7 @@ public class RestaurantManager {
             }
         }
         for (int i = 0; i < top; i++)
-            if (popularRestaurants[i].equals(""))
+            if (popularRestaurants[i] == null || popularRestaurants[i].equals(""))
                 return;
             else
                 System.out.println(popularRestaurants[i]);
