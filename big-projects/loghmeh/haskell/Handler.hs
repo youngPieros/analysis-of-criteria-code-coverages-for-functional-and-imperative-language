@@ -31,8 +31,8 @@ runScript = do
     commands <- getCommands
     let database = getEmptyDataBase
     let systemState = foldl (\ss command -> changeSystemState ss (runCommand command (fst ss))) (database, []) commands
-    let responses = (unlines $ map (\(Response r) -> r) (snd systemState))
-    return (responses ++ "\n\n\n\n")
+    let responses = (unlines $ filter (\r -> r /= "") $ map (\(Response r) -> r) (snd systemState))
+    return responses
 
 
 runCommand :: Command -> DataBase -> (DataBase, Response)
