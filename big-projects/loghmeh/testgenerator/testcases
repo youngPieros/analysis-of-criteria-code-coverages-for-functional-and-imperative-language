@@ -1,0 +1,82 @@
+getRecommendedRestaurants
+addRestaurant {"name": "albek", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.9, "price": 300000}, {"name": "omlet", "description": "it’s bad taste!", "popularity": 0.5, "price":3100}]}
+addRestaurant {"name": "albek", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.9, "price": 300000}, {"name": "omlet", "description": "it’s bad taste!", "popularity": 0.5, "price":3100}]}
+addRestaurant {"name": "shideh", "description": "good", "location": {"x": 5, "y": 3}, "menu": [{"name": "rice", "description": "it’s mediocre!", "popularity": 0.9, "price": 300000}, {"name": "alfredo", "description": "it’s good taste!", "popularity": 0.8, "price":31000}]}
+addRestaurant {"name": "amado", "description": "luxury", "location": {"x": 4, "y": 3}, "menu": [{"name": "chicken popcorn", "description": "it’s so good!", "popularity": 0.9, "price": 301000}, {"name": "zink berger", "description": "it’s good taste!", "popularity": 0.8, "price":30000}]}
+addRestaurant {"name": "amado", "description": "luxury", "location": {"x": 4, "y": 3}, "menu": [{"name": "chicken popcorn", "description": "it’s so good!", "popularity": 0.9, "price": 301000}, {"name": "zink berger", "description": "it’s good taste!", "popularity": 0.8, "price":30000}]}
+addRestaurant {"name": "Sib", "description": "luxury", "location": {"x": 4, "y": 3}, "menu": [{"name": "chicken popcorn", "description": "it’s so good!", "popularity": 0.9, "price": 301000}, {"name": "zink berger", "description": "it’s good taste!", "popularity": 0.8, "price":30000}]}
+addRestaurant {"name": "TermeToranj", "description": "luxury", "location": {"x": 4, "y": 3}, "menu": []}
+addRestaurant {"name": "TermeToranj", "description": "luxury", "location": {"x": 4, "y": 3}, "menu": []}
+addRestaurant {"name": "Barooj", "description": "luxury", "location": {"x": 0, "y": 0}, "menu": [{"name": "chicken popcorn", "description": "it’s so good!", "popularity": 0.9, "price": 301000}]}
+addFood {"name": "rolet", "description": "it’s bad!", "popularity": 0.5, "restaurantName": "Hesturan", "price": 20200}
+addFood {"name": "rolet", "description": "it’s bad!", "popularity": 0.5, "restaurantName": "Hesturan", "price": 20200}
+addFood {"name": "pizza", "description": "it’s delicious!", "popularity": 0.95, "restaurantName": "albek", "price": 30200}
+addFood {"name": "pizza", "description": "it’s delicious!", "popularity": 0.95, "restaurantName": "Sib", "price": 30200}
+addFood {"name": "pizza", "description": "it’s delicious!", "popularity": 0.95, "restaurantName": "TelePizza", "price": 30200}
+addToCart {"foodName": "Kabab", "restaurantName": "Hesturan"}
+addToCart {"foodName": "Kabab", "restaurantName": "Hesturan"}
+addToCart {"foodName": "rolet", "restaurantName": "Hesturan"}
+addToCart {"foodName": "rolet", "restaurantName": "Hesturan"}
+addToCart {"foodName": "rolet", "restaurantName": "Hesturan"}
+addToCart {"foodName": "pasta", "restaurantName": "Hesturan"}
+addToCart {"foodName": "rolet", "restaurantName": "Marikh"}
+getFood {"foodName": "Kabab", "restaurantName": "Hesturan"}
+getFood {"foodName": "Kabab", "restaurantName": "Hesturan"}
+getFood {"foodName": "Joojeh", "restaurantName": "Hesturan"}
+getFood {"foodName": "Joojeh", "restaurantName": "Merikh"}
+getCart
+getRestaurant {"name": "Hesturan"}
+getRestaurant {"name": "Hesturan"}
+getRestaurant {"name": "DonCorleone"}
+getRestaurant {"name": "DonCorleone2"}
+getRestaurants
+getRecommendedRestaurants
+getCart
+getRecommendedRestaurants
+getRecommendedRestaurants
+iman
+getRecommendedRestaurants
+addRestaurant {"name": "albek", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.9, "price": 300000}, {"name": "omlet", "description": "it’s bad taste!", "popularity": 0.5, "price":3100}]}
+addRestaurant {"name": "meykhosh", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.9, "price": 300000}, {"name": "omlet", "description": "it’s bad taste!", "popularity": 0.5, "price":3100}]}
+addFood {"name": "pizza", "description": "it’s delicious!", "popularity": 0.95, "restaurantName": "albek", "price": 30200}
+addFood {"name": "pizza", "description": "it’s delicious!", "popularity": 0.95, "restaurantName": "albeks", "price": 30200}
+addFood {"name": "pizza", "description": "it’s delicious!", "popularity": 0.95, "restaurantName": "albek", "price": 30200}
+getRestaurants
+getRestaurant {"name": "meykhosh"}
+getRestaurant {"name": "albek"}
+getRestaurant {"name": "italy"}
+getFood {"foodName": "pasta", "restaurantName": "albek"}
+getFood {"foodName": "pizza", "restaurantName": "TermeToranj"}
+getFood {"foodName": "rolet", "restaurantName": "albek"}
+getFood {"foodName": "pasta", "restaurantName": "meykhosh"}
+getFood {"foodName": "Kabab", "restaurantName": "meykhosh"}
+getFood {"foodName": "pasta", "restaurantName": "nader"}
+getFood {"foodName": "pasta2", "restaurantName": "nader2"}
+getFood {"foodName": "pasta", "restaurantName": "nader"}
+addToCart {"foodName": "pasta", "restaurantName": "nader"}
+addToCart {"foodName": "pasta", "restaurantName": "albek"}
+addToCart {"foodName": "pizza", "restaurantName": "albek"}
+addToCart {"foodName": "pizza", "restaurantName": "albek"}
+addToCart {"foodName": "pizza", "restaurantName": "albek"}
+addToCart {"foodName": "rolet", "restaurantName": "albek"}
+addToCart {"foodName": "pasta", "restaurantName": "meykhosh"}
+addToCart {"foodName": "Kabab", "restaurantName": "meykhosh"}
+addToCart {"foodName": "pasta", "restaurantName": "nader"}
+addToCart {"foodName": "pasta", "restaurantName": "nader"}
+getCart
+finalizeOrder
+finalizeOrder
+getRecommendedRestaurants
+addRestaurant {"name": "meykhosh1", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.9, "price": 300000}]}
+addRestaurant {"name": "meykhosh2", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.91, "price": 300000}]}
+getRecommendedRestaurants
+addRestaurant {"name": "meykhosh3", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.92, "price": 300000}]}
+getRecommendedRestaurants
+addRestaurant {"name": "meykhosh4", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.93, "price": 300000}]}
+getRecommendedRestaurants
+addRestaurant {"name": "meykhosh5", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": [{"name": "pasta", "description": "it’s so yummy!", "popularity": 0.94, "price": 300000}]}
+getRecommendedRestaurants
+addRestaurant {"name": "meykhosh6", "description": "luxury", "location": {"x": 0, "y": 1}, "menu": []}
+getRecommendedRestaurants
+addToCart {"foodName": "pasta", "restaurantName": "albek"}
+getCart
