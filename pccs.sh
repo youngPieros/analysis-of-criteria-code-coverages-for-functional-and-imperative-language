@@ -3,6 +3,7 @@ run_java_haskell=true
 run_java=false
 run_haskell=false
 combine_java_report_with_haskell=false
+use_static_tests=false
 haskell_reports=(hpc_index.html hpc_index_alt.html hpc_index_exp.html hpc_index_fun.html)
 
 function help() {
@@ -14,6 +15,7 @@ function help() {
   echo  "  -j or --java:                    compile java folder and use it to run test cases"
   echo  "  -h or --haskell:                 compile haskell folder and use it to run test cases"
   echo  "  -c or --combine_reports:         combine every java report with haskell report"
+  echo  "  -s or --static-tests:            use static tests instead of running test generator"
   echo
   echo "example: "
   echo "  pccs loghmeh"
@@ -39,6 +41,9 @@ while test $# -gt 0; do
       ;;
     -c|--combine_reports)
       export combine_java_report_with_haskell=true
+      ;;
+    -s|--static-tests)
+      export use_static_tests=true
       ;;
     *)
       echo "Invalid command. Try --help for more information."
@@ -79,7 +84,23 @@ if [[ ! -d ./big-projects/$project/testgenerator ]]; then
 else
   mkdir -p ./bin/big-projects/$project/testgenerator
   cp ./big-projects/$project/testgenerator/* ./bin/big-projects/$project/testgenerator
-  echo "test generator ran successfully"
+  cd ./bin/big-projects/$project/testgenerator
+  if [[ $use_static_tests = false ]]; then
+    test_generator_execution_successfully=true
+    python3 testcaseGenerator.py > testcases 2>../testgenerator_execution_log || test_generator_execution_successfully=false
+    if [[ $test_generator_execution_successfully = false ]]; then
+      echo "# Error: failed in execute test generator. check ./bin/big-project/$project/testgenerator_execution_log"
+      exit 1
+    fi
+    echo "test generator ran successfully"
+  else
+    if [[ ! -e testcases ]]; then
+      echo "# Error: not found testcases file for static test cases. This file should be placed in big-project/$project/testgenerator directory"
+      exit 1
+    fi
+    echo "static test case is copied successfully"
+  fi
+  cd ../../../..
 fi
 
 
@@ -116,7 +137,7 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
         echo "please check artifactId in $java_project/pom.xml file. it should be same as project name folder(in this case it should be $project)"
         exit 1
       fi
-      java -javaagent:./jacocoagent.jar -cp ./target/out Main < ../../testgenerator/tests > output 2>>log || java_execution_successfully=false
+      java -javaagent:./jacocoagent.jar -cp ./target/out Main < ../../testgenerator/testcases > output 2>>log || java_execution_successfully=false
       if [[ $java_execution_successfully = false ]]; then
         echo "# Error: failed in execute java program. check $main_dir/java/$java_project/log"
         exit 1
@@ -145,7 +166,7 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
     exit 1
   fi
   touch haskell_output
-  (cat ../testgenerator/tests | ./Main > ./haskell_output 2>../log) && haskell_execution_successfully=true
+  (cat ../testgenerator/testcases | ./Main > ./haskell_output 2>../log) && haskell_execution_successfully=true
   if [[ $haskell_execution_successfully = false ]]; then
     echo "# Error: failed in execute haskell program. check $main_dir/log"
     exit 1
