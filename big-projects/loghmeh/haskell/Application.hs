@@ -50,7 +50,8 @@ foodMapper food = Food{name=foodName, description=foodDescription, popularity=fo
         foodPopularity = (popularity :: AddFoodArgs -> Double) food
         foodPrice = (price :: AddFoodArgs -> Double) food
 
-
+toDTO :: ToJSON a => a -> String
+toDTO obj = (C.unpack . encode) $ obj
 
 addRestaurant :: Command -> DataBase -> (DataBase, Response)
 addRestaurant (AddRestaurant (AddRestaurantArgs name description location menu)) db
@@ -83,7 +84,7 @@ getRestaurants GetRestaurants database = (database, Response response)
 getRestaurant :: Command -> DataBase -> (DataBase, Response)
 getRestaurant (GetRestaurant args) database
     | restaurant == EmptyRestaurant = (database, Response ("there is not " ++ restaurantName ++ " restaurant"))
-    | otherwise = (database, Response (C.unpack . (encode :: Restaurant -> C.ByteString) $ restaurant))
+    | otherwise = (database, Response (toDTO restaurant))
     where
         restaurant = DataBase.getRestaurant database restaurantName
         restaurantName = (name :: GetRestaurantArgs -> String) args
@@ -92,7 +93,7 @@ getRestaurant (GetRestaurant args) database
 getFood :: Command -> DataBase -> (DataBase, Response)
 getFood (GetFood args) database
     | food == EmptyFood = (database, Response "there is not this food")
-    | otherwise = (database, Response (C.unpack . (encode :: Food -> C.ByteString) $ food))
+    | otherwise = (database, Response (toDTO food))
     where
         food = findFood database restName fName
         fName = (foodName :: GetFoodArgs -> String) args
@@ -116,7 +117,7 @@ addToCart (AddToCart args) db
 getCart :: Command -> DataBase -> (DataBase, Response)
 getCart GetCart db
     | basket == EmptyOrder = (db, Response "empty order!")
-    | otherwise = (db, Response (C.unpack . (encode :: Order -> C.ByteString) $ basket))
+    | otherwise = (db, Response (toDTO basket))
     where
         basket = getUserBasket db defaultUser
         defaultUser = "IMAN"
@@ -125,7 +126,7 @@ getCart GetCart db
 finalizeOrder :: Command -> DataBase -> (DataBase, Response)
 finalizeOrder FinalizeOrder db
     | basket == EmptyOrder = (db, Response "there is no order")
-    | otherwise = (removeOrder db basket, Response (C.unpack . (encode :: Order -> C.ByteString) $ basket))
+    | otherwise = (removeOrder db basket, Response (toDTO basket))
     where
         basket = getUserBasket db defaultUser
         defaultUser = "IMAN"
