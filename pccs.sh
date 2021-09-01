@@ -2,6 +2,8 @@ project=""
 run_java_haskell=true
 run_java=false
 run_haskell=false
+combine_java_report_with_haskell=false
+haskell_reports=(hpc_index.html hpc_index_alt.html hpc_index_exp.html hpc_index_fun.html)
 
 function help() {
   echo "project code coverage script:"
@@ -9,8 +11,9 @@ function help() {
   echo
   echo "Options:"
   echo  "  -p or --project:                 specifies name of project"
-  echo  "  -j or --java:                    compile java folder and use it to run test cases."
-  echo  "  -h or --haskell:                 compile haskell folder and use it to run test cases."
+  echo  "  -j or --java:                    compile java folder and use it to run test cases"
+  echo  "  -h or --haskell:                 compile haskell folder and use it to run test cases"
+  echo  "  -c or --combine_reports:         combine every java report with haskell report"
   echo
   echo "example: "
   echo "  pccs loghmeh"
@@ -33,6 +36,9 @@ while test $# -gt 0; do
     -j|--java)
       export run_java=true
       export run_java_haskell=false
+      ;;
+    -c|--combine_reports)
+      export combine_java_report_with_haskell=true
       ;;
     *)
       echo "Invalid command. Try --help for more information."
@@ -145,15 +151,34 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
     exit 1
   fi
   mkdir -p ../report/haskell
-  hpc report Main > ../report/haskell/reportfile
+  temp_out=$(hpc markup Main)
+  mkdir -p ../report/haskell
+  cp *.html ../report/haskell
   cd ../report/haskell
-  cp ../../../../../resources/haskell/* ./
-  if [[ -d haskell-report-resources ]]; then
-    rm -rf haskell-report-resources
-  fi
-  unzip -qq haskell-report-resources.zip
-  rm haskell-report-resources.zip
-  python3 haskell_html_report_generator.py < ./reportfile > ./h_report.html
+  cp ../../../../../resources/haskell/haskell_html_report_generator.py ./
+  for h_report in ${haskell_reports[@]}; do
+    python3 haskell_html_report_generator.py $h_report
+  done
+  rm haskell_html_report_generator.py
   echo "haskell was compiled and ran successfully and report is generated"
   cd ../../../../..
+fi
+
+if [[ $combine_java_report_with_haskell = true && ($run_java = true && $run_haskell = true || $run_java_haskell = true) ]]; then
+  cd $main_dir/report
+  projects=$(ls)
+  for p in ${projects[@]}; do
+    if [[ ! $p = haskell ]]; then
+      cp haskell/*.html ./$p
+      cd $p
+      for h_report in ${haskell_reports[@]}; do
+        cat index.html $h_report > temp
+        cat temp > $h_report
+        rm temp
+      done
+      cp hpc_index.html index.html
+      firefox index.html &
+      cd ..
+    fi
+  done
 fi
