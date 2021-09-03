@@ -5,6 +5,7 @@ module CommandArguments
 ( StartEndArgument(..)
 , ClassTimeArgument(..)
 , AddCourseArgument(..)
+, AddStudentArgument(..)
 ) where
 
 
@@ -35,8 +36,10 @@ data AddCourseArgument = AddCourseArgument { code :: String
                                            , prerequisites :: [String]
                                            } deriving(Show)
 
-
-
+data AddStudentArgument = AddStudentArgument { studentId :: String
+                                             , name :: String
+                                             , enteredAt :: Int
+                                             }
 
 
 
@@ -48,4 +51,7 @@ instance FromJSON ClassTimeArgument where
 
 instance FromJSON AddCourseArgument where
     parseJSON (Object v) = AddCourseArgument <$> v .: "code" <*> v .: "name" <*> v .: "instructor" <*> v .: "units" <*> v .: "classTime" <*> v .: "examTime" <*> v .: "capacity" <*> v .: "prerequisites"
+
+instance FromJSON AddStudentArgument where
+    parseJSON (Object v) = AddStudentArgument <$> v .: "studentId" <*> v .: "name" <*> v .: "enteredAt"
 
