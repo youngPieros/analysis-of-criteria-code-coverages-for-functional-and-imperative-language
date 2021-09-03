@@ -30,6 +30,7 @@ command = do
 parseCommand :: String -> String -> Command
 parseCommand commandName args
     | commandName == "addOffering" = parseAddOfferingCommand args
+    | commandName == "addStudent" = parseAddStudentCommand args
     | otherwise = BadCommand
 
 
@@ -37,3 +38,9 @@ parseAddOfferingCommand :: String -> Command
 parseAddOfferingCommand json = if Data.Maybe.isJust args then AddCourse (Data.Maybe.fromJust args) else BadCommand
     where
         args = (decode (C.pack json) :: Maybe AddCourseArgument)
+
+parseAddStudentCommand :: String -> Command
+parseAddStudentCommand json = if Data.Maybe.isJust args then AddStudent (Data.Maybe.fromJust args) else BadCommand
+    where
+        args = (decode (C.pack json) :: Maybe AddStudentArgument)
+
