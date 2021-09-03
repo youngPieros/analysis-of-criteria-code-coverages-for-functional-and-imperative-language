@@ -4,6 +4,7 @@ module DataMapper
 ( toCourse
 , toStudent
 , toCourseSummary
+, toTermCourse
 ) where
 
 
@@ -17,6 +18,8 @@ import Course
 import Student
 import CommandArguments
 import DTO
+import TermCourseStatus
+import TermCourse
 
 
 toCourse :: AddCourseArgument -> Course
@@ -50,3 +53,6 @@ toCourseSummary course = CourseSummary{code=courseCode, name=courseName, instruc
         courseCode = (code :: Course -> String) course
         courseName = (name :: Course -> String) course
         instructorName = (instructor :: Course -> String) course
+
+toTermCourse :: Course -> TermCourse
+toTermCourse (Course c n i _ ct et _ _) = TermCourse c n i ct et NonFinalized

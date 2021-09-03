@@ -5,6 +5,7 @@ module Application
 , Application.addStudent
 , Application.getCourses
 , Application.getCourse
+, Application.addToWeeklySchedule
 ) where
 
 
@@ -17,8 +18,8 @@ import DataMapper
 import Course
 import Student
 import DTO
-
-
+import ScheduleCourse
+import StudentScheduleCourse
 
 addCourse :: DataBase -> AddCourseArgument -> (DataBase, Response)
 addCourse db args
@@ -55,3 +56,16 @@ getCourse db args
     where
         course = searchCourse db ((code :: GetCourseArgument -> String) args)
         student = DataBase.findStudent db ((studentId :: GetCourseArgument -> String) args)
+
+
+addToWeeklySchedule :: DataBase -> AddToWeeklyScheduleArgument -> (DataBase, Response)
+addToWeeklySchedule db (AddToWeeklyScheduleArgument sid courseCode)
+    | student == NullStudent = (db, Response "StudentNotFound")
+    | course == NullCourse = (db, Response "OfferingNotFound")
+    | scheduleCourses == NullSchedule = (upsertStudentScheduleCourses db sid (addTermCourse (createStudentScheduleCourse sid) termCourse), Response "")
+    | otherwise = (upsertStudentScheduleCourses db sid (addTermCourse scheduleCourses termCourse), Response "")
+    where
+        scheduleCourses = DataBase.findStudentScheduleCourses db sid
+        termCourse = toTermCourse course
+        course = searchCourse db courseCode
+        student = DataBase.findStudent db sid
