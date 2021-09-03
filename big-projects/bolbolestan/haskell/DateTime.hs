@@ -25,7 +25,7 @@ instance Read DateTime where
     readsPrec _ datetime = [(DateTime{year=year, month=month, day=day, hour=hour, minute=minute, second=second}, "")]
         where
             [year, month, day, hour, minute, second] = map (\arg -> read arg :: Int) (dateParams ++ timeParams)
-            timeParams = map (dropWhile (\c -> c == '0')) $ splitOn "-" date
+            timeParams = map (\t -> if all (\c -> c == '0') t then "0" else dropWhile (\c -> c == '0') t) $ splitOn ":" time
             dateParams = map (dropWhile (\c -> c == '0')) $ splitOn "-" date
             [date, time] = splitWhen (\c -> c == 'T') datetime
 
