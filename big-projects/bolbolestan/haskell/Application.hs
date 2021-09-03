@@ -4,6 +4,7 @@ module Application
 ( Application.addCourse
 , Application.addStudent
 , Application.getCourses
+, Application.getCourse
 ) where
 
 
@@ -45,3 +46,13 @@ getCourses db args
     where
         courses = toDTO $ map (toCourseSummary) (Data.List.sort (DataBase.getCourses db))
         student = findStudent db ((studentId :: GetCoursesArgument -> String) args)
+
+
+getCourse :: DataBase -> GetCourseArgument -> (DataBase, Response)
+getCourse db args
+    | student == NullStudent = (db, Response "StudentNotFound")
+    | courses == [] = (db, Response "OfferingNotFound")
+    | otherwise = (db, Response (toDTO courses))
+    where
+        courses = searchCourse db ((code :: GetCourseArgument -> String) args)
+        student = DataBase.findStudent db ((studentId :: GetCourseArgument -> String) args)
