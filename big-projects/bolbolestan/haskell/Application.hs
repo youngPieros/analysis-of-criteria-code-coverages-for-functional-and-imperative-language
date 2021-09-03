@@ -8,10 +8,13 @@ module Application
 , Application.addToWeeklySchedule
 , Application.removeFromWeeklySchedule
 , Application.getStudentWeeklySchedule
+, Application.finalizeWeeklySchedule
 ) where
 
 
 import Data.List
+import Data.Function
+import Data.Maybe
 
 import DataBase
 import Response
@@ -20,8 +23,12 @@ import DataMapper
 import Course
 import Student
 import DTO
-import ScheduleCourse
+import TermCourseStatus
+import TermCourse
 import StudentScheduleCourse
+import ExamTime
+import ClassTime
+import Util
 
 addCourse :: DataBase -> AddCourseArgument -> (DataBase, Response)
 addCourse db args
@@ -65,6 +72,7 @@ addToWeeklySchedule db (AddToWeeklyScheduleArgument sid courseCode)
     | student == NullStudent = (db, Response "StudentNotFound")
     | course == NullCourse = (db, Response "OfferingNotFound")
     | scheduleCourses == NullSchedule = (upsertStudentScheduleCourses db sid (addTermCourse (createStudentScheduleCourse sid) termCourse), Response "")
+    | elem termCourse (termCourses scheduleCourses) = (db, Response "RepetitiveCourseError")
     | otherwise = (upsertStudentScheduleCourses db sid (addTermCourse scheduleCourses termCourse), Response "")
     where
         scheduleCourses = DataBase.findStudentScheduleCourses db sid
@@ -92,3 +100,48 @@ getStudentWeeklySchedule db (GetWeeklyScheduleArgument sid)
         courses = getTermCourses scheduleCourses
         scheduleCourses = DataBase.findStudentScheduleCourses db sid
         student = DataBase.findStudent db sid
+
+getCoursesCapacities :: DataBase -> [String] -> [(String, Int, Int)]
+getCoursesCapacities db coursesCodes = result
+    where
+        result = map (\(c, s) -> (c, s, getCapacity (fromJust (find (\co -> (\c -> (code :: Course -> String) c) co == c) courses)))) coursesCapacities
+        coursesCapacities = map (\g -> (getCode $ head g, length g)) groupedScheduleCourses
+        groupedScheduleCourses = groupBy (\c1 c2 -> getCode c1 == getCode c2) (sortBy (compare `on` getCode) finalizedScheduledCourses)
+        finalizedScheduledCourses = filter (\(TermCourse c _ _ _ _ s) -> (elem c coursesCodes) && (s == Finalized)) allScheduleCourses
+        allScheduleCourses = concat $ map (\sc -> termCourses sc) (studentsScheduleCourses db)
+        courses = map (searchCourse db) coursesCodes
+        getCapacity = (\c -> (capacity :: Course -> Int) c)
+        getCode = (\c -> (code :: TermCourse -> String) c)
+
+
+finalizeWeeklySchedule :: DataBase -> FinalizeScheduleArgument -> (DataBase, Response)
+finalizeWeeklySchedule db (FinalizeScheduleArgument sid)
+    | student == NullStudent = (db, Response "StudentNotFound")
+    | studentTermCourses == [] || nonFinalizedCourses == [] = (db, Response "Student did not add new course to his schedule courses")
+    | unitsCourses < minimumUnits = (db, Response "MinimumUnitsError")
+    | unitsCourses > maximumUnits = (db, Response "MaximumUnitsError")
+    | isJust conflictOnClassTime = (db, Response ("ClassTimeCollisionError " ++ (codesString (fromJust conflictOnClassTime))))
+    | isJust conflictOnExamTime = (db, Response ("ExamTimeCollisionError " ++ (codesString (fromJust conflictOnExamTime))))
+    | isJust courseWithFullCapacity = (db, Response (getCapacityError (fromJust courseWithFullCapacity)))
+    | otherwise = (upsertStudentScheduleCourses db sid (finalizeCourses scheduleCourses), Response "")
+    where
+        conflictOnClassTime = find (\(c1, c2) -> ClassTime.conflict (getClassTime c1) (getClassTime c2)) (toOrderedPais courses)
+        conflictOnExamTime = find (\(c1, c2) -> ExamTime.conflict (getExamTime c1) (getExamTime c2)) (toOrderedPais courses)
+        courseWithFullCapacity = find (\(co, ca, ma) -> ca >= ma) coursesCapacities
+        coursesCapacities = getCoursesCapacities db nonFinalizedCodeCourses
+        unitsCourses = sum $ map (\c -> (units :: Course -> Int) c) courses
+        courses = map (searchCourse db) coursesCodes
+        nonFinalizedCodeCourses = map (\c -> getCode c) nonFinalizedCourses
+        nonFinalizedCourses = filter (\c -> status c == NonFinalized) studentTermCourses
+        coursesCodes = map (\c -> getCode c) studentTermCourses
+        studentTermCourses = getTermCourses scheduleCourses
+        scheduleCourses = DataBase.findStudentScheduleCourses db sid
+        student = DataBase.findStudent db sid
+        minimumUnits = 12
+        maximumUnits = 20
+        getCapacityError = (\(c, _, _) -> "CapacityError " ++ c)
+        codesString = (\(c1, c2) -> (getCourseCode c1) ++ " " ++ (getCourseCode c2))
+        getCode = (\c -> (code :: TermCourse -> String) c)
+        getCourseCode = (\c -> (code :: Course -> String) c)
+        getExamTime = (\c -> (examTime :: Course -> ExamTime) c)
+        getClassTime = (\c -> (classTime :: Course -> ClassTime) c)
