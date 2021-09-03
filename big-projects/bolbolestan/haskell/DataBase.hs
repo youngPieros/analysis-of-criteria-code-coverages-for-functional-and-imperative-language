@@ -2,6 +2,7 @@ module DataBase
 ( DataBase(..)
 , getEmptyDataBase
 , addCourse
+, getCourses
 , searchCourse
 , addStudent
 , findStudent
@@ -31,6 +32,9 @@ searchCourse :: DataBase -> String -> [Course]
 searchCourse db courseCode = searchedCourses
     where
         searchedCourses = Data.List.filter (\c -> (code :: Course -> String) c == courseCode) (courses db)
+
+getCourses :: DataBase -> [Course]
+getCourses db = courses db
 
 addStudent :: DataBase -> Student -> DataBase
 addStudent db student = DataBase{courses=(courses db), students=(student:(students db))}

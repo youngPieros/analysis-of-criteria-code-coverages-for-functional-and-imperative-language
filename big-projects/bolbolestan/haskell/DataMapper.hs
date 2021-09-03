@@ -3,6 +3,7 @@
 module DataMapper
 ( toCourse
 , toStudent
+, toCourseSummary
 ) where
 
 
@@ -15,7 +16,7 @@ import ExamTime
 import Course
 import Student
 import CommandArguments
-
+import DTO
 
 
 toCourse :: AddCourseArgument -> Course
@@ -43,3 +44,9 @@ toStudent args = Student sid studentName studentEnteredAt
         studentName = (name :: AddStudentArgument -> String) args
         studentEnteredAt = (enteredAt :: AddStudentArgument -> Int) args
 
+toCourseSummary :: Course -> CourseSummary
+toCourseSummary course = CourseSummary{code=courseCode, name=courseName, instructor=instructorName}
+    where
+        courseCode = (code :: Course -> String) course
+        courseName = (name :: Course -> String) course
+        instructorName = (instructor :: Course -> String) course

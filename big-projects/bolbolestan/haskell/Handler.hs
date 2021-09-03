@@ -39,6 +39,7 @@ runCommand :: Command -> DataBase -> (DataBase, Response)
 runCommand command database = case command of
     AddCourse args -> Application.addCourse database args
     AddStudent args -> Application.addStudent database args
+    GetCourses args -> Application.getCourses database args
     BadCommand -> (database, Response "bad command!!!")
 
 

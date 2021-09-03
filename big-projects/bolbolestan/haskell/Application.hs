@@ -3,8 +3,11 @@
 module Application
 ( Application.addCourse
 , Application.addStudent
+, Application.getCourses
 ) where
 
+
+import Data.List
 
 import DataBase
 import Response
@@ -12,6 +15,7 @@ import CommandArguments
 import DataMapper
 import Course
 import Student
+import DTO
 
 
 
@@ -24,6 +28,7 @@ addCourse db args
         searchedCourses = searchCourse db ((Course.code :: Course -> String) course)
         course = toCourse args
 
+
 addStudent :: DataBase -> AddStudentArgument -> (DataBase, Response)
 addStudent db args
     | searchedStudent == NullStudent = (DataBase.addStudent db student, Response "Student is successfully registered")
@@ -31,3 +36,12 @@ addStudent db args
     where
         searchedStudent = DataBase.findStudent db ((studentId :: AddStudentArgument -> String) args)
         student = toStudent args
+
+
+getCourses :: DataBase -> GetCoursesArgument -> (DataBase, Response)
+getCourses db args
+    | student == NullStudent = (db, Response "StudentNotFound")
+    | otherwise = (db, Response courses)
+    where
+        courses = toDTO $ map (toCourseSummary) (Data.List.sort (DataBase.getCourses db))
+        student = findStudent db ((studentId :: GetCoursesArgument -> String) args)
