@@ -10,5 +10,6 @@ import CommandArguments
 
 data Command =
     AddCourse AddCourseArgument |
+    AddStudent AddStudentArgument |
     BadCommand
 
