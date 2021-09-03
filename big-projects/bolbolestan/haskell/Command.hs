@@ -13,5 +13,6 @@ data Command =
     AddStudent AddStudentArgument |
     GetCourses GetCoursesArgument |
     GetCourse GetCourseArgument |
+    AddToWeeklySchedule AddToWeeklyScheduleArgument |
     BadCommand
 

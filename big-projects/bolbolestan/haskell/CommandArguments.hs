@@ -8,6 +8,7 @@ module CommandArguments
 , AddStudentArgument(..)
 , GetCoursesArgument(..)
 , GetCourseArgument(..)
+, AddToWeeklyScheduleArgument(..)
 ) where
 
 
@@ -48,6 +49,10 @@ data GetCourseArgument = GetCourseArgument { studentId :: String
                                            , code :: String
                                            }
 
+data AddToWeeklyScheduleArgument = AddToWeeklyScheduleArgument { studentId :: String
+                                                               , code :: String
+                                                               }
+
 instance FromJSON StartEndArgument where
     parseJSON (Object v) = StartEndArgument <$> v .: "start" <*> v .: "end"
 
@@ -65,4 +70,7 @@ instance FromJSON GetCoursesArgument where
 
 instance FromJSON GetCourseArgument where
     parseJSON (Object v) = GetCourseArgument <$> v .: "studentId" <*> v .: "code"
+
+instance FromJSON AddToWeeklyScheduleArgument where
+    parseJSON (Object v) = AddToWeeklyScheduleArgument <$> v .: "studentId" <*> v .: "code"
 
