@@ -6,12 +6,12 @@ module CommandArguments
 , ClassTimeArgument(..)
 , AddCourseArgument(..)
 , AddStudentArgument(..)
+, GetCoursesArgument(..)
 ) where
 
 
 import qualified Data.ByteString.Lazy.Char8 as C
 import Data.Maybe
-
 import Control.Applicative
 import Control.Monad
 import Data.Aeson
@@ -20,11 +20,11 @@ import Data.Aeson
 
 data StartEndArgument = StartEndArgument { start :: String
                                          , end :: String
-                                         } deriving(Show)
+                                         } deriving (Show)
 
 data ClassTimeArgument = ClassTimeArgument { days :: [String]
                                            , time :: String
-                                           } deriving(Show)
+                                           } deriving (Show)
 
 data AddCourseArgument = AddCourseArgument { code :: String
                                            , name :: String
@@ -34,12 +34,14 @@ data AddCourseArgument = AddCourseArgument { code :: String
                                            , examTime :: StartEndArgument
                                            , capacity :: Int
                                            , prerequisites :: [String]
-                                           } deriving(Show)
+                                           } deriving (Show)
 
 data AddStudentArgument = AddStudentArgument { studentId :: String
                                              , name :: String
                                              , enteredAt :: Int
                                              }
+
+data GetCoursesArgument = GetCoursesArgument { studentId :: String }
 
 
 
@@ -54,4 +56,7 @@ instance FromJSON AddCourseArgument where
 
 instance FromJSON AddStudentArgument where
     parseJSON (Object v) = AddStudentArgument <$> v .: "studentId" <*> v .: "name" <*> v .: "enteredAt"
+
+instance FromJSON GetCoursesArgument where
+    parseJSON (Object v) = GetCoursesArgument <$> v .: "studentId"
 
