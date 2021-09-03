@@ -28,10 +28,12 @@ getEmptyDataBase = DataBase{courses=[], students=[]}
 addCourse :: DataBase -> Course -> DataBase
 addCourse db course = DataBase{courses=(course:(courses db)), students=(students db)}
 
-searchCourse :: DataBase -> String -> [Course]
-searchCourse db courseCode = searchedCourses
+searchCourse :: DataBase -> String -> Course
+searchCourse db courseCode
+    | Data.Maybe.isJust course = Data.Maybe.fromJust course
+    | otherwise = NullCourse
     where
-        searchedCourses = Data.List.filter (\c -> (code :: Course -> String) c == courseCode) (courses db)
+        course = Data.List.find (\c -> (code :: Course -> String) c == courseCode) (courses db)
 
 getCourses :: DataBase -> [Course]
 getCourses db = courses db

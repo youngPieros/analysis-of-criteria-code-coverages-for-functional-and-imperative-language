@@ -22,11 +22,10 @@ import DTO
 
 addCourse :: DataBase -> AddCourseArgument -> (DataBase, Response)
 addCourse db args
-    | sameCourse == False = (DataBase.addCourse db course, Response "successful")
-    | otherwise = (db, Response "This course has conflict in class time with current courses")
+    | searchedCourse == course = (db, Response "This course has conflict in class time with current courses")
+    | otherwise = (DataBase.addCourse db course, Response "successful")
     where
-        sameCourse = elem course searchedCourses
-        searchedCourses = searchCourse db ((Course.code :: Course -> String) course)
+        searchedCourse = searchCourse db ((Course.code :: Course -> String) course)
         course = toCourse args
 
 
@@ -51,8 +50,8 @@ getCourses db args
 getCourse :: DataBase -> GetCourseArgument -> (DataBase, Response)
 getCourse db args
     | student == NullStudent = (db, Response "StudentNotFound")
-    | courses == [] = (db, Response "OfferingNotFound")
-    | otherwise = (db, Response (toDTO courses))
+    | course == NullCourse = (db, Response "OfferingNotFound")
+    | otherwise = (db, Response (toDTO course))
     where
-        courses = searchCourse db ((code :: GetCourseArgument -> String) args)
+        course = searchCourse db ((code :: GetCourseArgument -> String) args)
         student = DataBase.findStudent db ((studentId :: GetCourseArgument -> String) args)
