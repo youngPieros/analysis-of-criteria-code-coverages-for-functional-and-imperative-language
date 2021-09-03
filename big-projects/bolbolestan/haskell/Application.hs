@@ -1,5 +1,8 @@
+{-# LANGUAGE DuplicateRecordFields #-}
+
 module Application
 ( Application.addCourse
+, Application.addStudent
 ) where
 
 
@@ -8,6 +11,7 @@ import Response
 import CommandArguments
 import DataMapper
 import Course
+import Student
 
 
 
@@ -20,3 +24,10 @@ addCourse db args
         searchedCourses = searchCourse db ((Course.code :: Course -> String) course)
         course = toCourse args
 
+addStudent :: DataBase -> AddStudentArgument -> (DataBase, Response)
+addStudent db args
+    | searchedStudent == NullStudent = (DataBase.addStudent db student, Response "Student is successfully registered")
+    | otherwise = (db, Response "There is a student with this studentId")
+    where
+        searchedStudent = DataBase.findStudent db ((studentId :: AddStudentArgument -> String) args)
+        student = toStudent args
