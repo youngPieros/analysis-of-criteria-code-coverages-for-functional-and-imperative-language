@@ -7,6 +7,7 @@ module CommandArguments
 , AddCourseArgument(..)
 , AddStudentArgument(..)
 , GetCoursesArgument(..)
+, GetCourseArgument(..)
 ) where
 
 
@@ -43,7 +44,9 @@ data AddStudentArgument = AddStudentArgument { studentId :: String
 
 data GetCoursesArgument = GetCoursesArgument { studentId :: String }
 
-
+data GetCourseArgument = GetCourseArgument { studentId :: String
+                                           , code :: String
+                                           }
 
 instance FromJSON StartEndArgument where
     parseJSON (Object v) = StartEndArgument <$> v .: "start" <*> v .: "end"
@@ -59,4 +62,7 @@ instance FromJSON AddStudentArgument where
 
 instance FromJSON GetCoursesArgument where
     parseJSON (Object v) = GetCoursesArgument <$> v .: "studentId"
+
+instance FromJSON GetCourseArgument where
+    parseJSON (Object v) = GetCourseArgument <$> v .: "studentId" <*> v .: "code"
 

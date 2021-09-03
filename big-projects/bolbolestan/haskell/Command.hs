@@ -12,5 +12,6 @@ data Command =
     AddCourse AddCourseArgument |
     AddStudent AddStudentArgument |
     GetCourses GetCoursesArgument |
+    GetCourse GetCourseArgument |
     BadCommand
 
