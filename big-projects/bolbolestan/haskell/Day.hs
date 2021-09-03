@@ -4,7 +4,7 @@ module Day
 
 
 
-data Day = Saturday | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday deriving (Show, Read)
+data Day = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday deriving (Show, Read, Enum)
 
 instance Eq Day where
     Saturday == Saturday  = True
