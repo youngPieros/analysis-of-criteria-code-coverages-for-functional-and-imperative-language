@@ -42,6 +42,7 @@ runCommand command database = case command of
     GetCourses args -> Application.getCourses database args
     GetCourse args -> Application.getCourse database args
     AddToWeeklySchedule args -> Application.addToWeeklySchedule database args
+    RemoveFromWeeklySchedule args -> Application.removeFromWeeklySchedule database args
     BadCommand -> (database, Response "bad command!!!")
 
 
