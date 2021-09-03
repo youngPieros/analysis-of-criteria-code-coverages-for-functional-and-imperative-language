@@ -24,7 +24,7 @@ data Course = Course { code :: String
 
 instance Eq Course where
     NullCourse == NullCourse = True
-    c1 == c2 = code c1 == code c2
+    Course c1 _ i1 _ ct1 _ _ _ == Course c2 _ i2 _ ct2 _ _ _ = (c1 == c2) && (i1 == i2) && (ClassTime.conflict ct1 ct2)
     _ == _ = False
 
 instance ToJSON Course where

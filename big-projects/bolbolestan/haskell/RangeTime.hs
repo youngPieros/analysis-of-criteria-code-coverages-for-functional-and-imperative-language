@@ -6,8 +6,10 @@ module RangeTime
 ) where
 
 
-import Time
+import Data.List.Split
 import Data.Aeson
+
+import Time
 
 
 
@@ -20,6 +22,11 @@ instance Eq RangeTime where
 
 instance Show RangeTime where
     show (RangeTime start end) = ((show :: Time -> String) start) ++ "-" ++ ((show :: Time -> String) end)
+
+instance Read RangeTime where
+    readsPrec _ rangeTime = [(RangeTime{start=start, end=end}, "")]
+        where
+            [start, end] = map (\param -> (read param :: Time)) $ splitOn "-" rangeTime
 
 
 conflict :: RangeTime -> RangeTime -> Bool

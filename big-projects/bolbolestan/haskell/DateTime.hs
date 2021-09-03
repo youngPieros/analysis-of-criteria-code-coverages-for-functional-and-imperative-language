@@ -6,6 +6,7 @@ module DateTime
 import Data.List.Split
 
 
+
 data DateTime = DateTime { year :: Int
                          , month :: Int
                          , day :: Int
