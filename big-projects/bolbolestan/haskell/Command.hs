@@ -16,5 +16,6 @@ data Command =
     AddToWeeklySchedule AddToWeeklyScheduleArgument |
     RemoveFromWeeklySchedule RemoveFromWeeklyScheduleArgument |
     GetWeeklySchedule GetWeeklyScheduleArgument |
+    FinalizeSchedule FinalizeScheduleArgument |
     BadCommand
 
