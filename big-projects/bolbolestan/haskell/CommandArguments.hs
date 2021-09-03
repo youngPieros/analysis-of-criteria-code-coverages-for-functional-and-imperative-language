@@ -10,6 +10,7 @@ module CommandArguments
 , GetCourseArgument(..)
 , AddToWeeklyScheduleArgument(..)
 , RemoveFromWeeklyScheduleArgument(..)
+, GetWeeklyScheduleArgument(..)
 ) where
 
 
@@ -57,6 +58,10 @@ data AddToWeeklyScheduleArgument = AddToWeeklyScheduleArgument { studentId :: St
 data RemoveFromWeeklyScheduleArgument = RemoveFromWeeklyScheduleArgument { studentId :: String
                                                                          , code :: String
                                                                          }
+data GetWeeklyScheduleArgument = GetWeeklyScheduleArgument { studentId :: String }
+
+
+
 
 instance FromJSON StartEndArgument where
     parseJSON (Object v) = StartEndArgument <$> v .: "start" <*> v .: "end"
@@ -81,4 +86,7 @@ instance FromJSON AddToWeeklyScheduleArgument where
 
 instance FromJSON RemoveFromWeeklyScheduleArgument where
     parseJSON (Object v) = RemoveFromWeeklyScheduleArgument <$> v .: "studentId" <*> v .: "code"
+
+instance FromJSON GetWeeklyScheduleArgument where
+    parseJSON (Object v) = GetWeeklyScheduleArgument <$> v .: "studentId"
 

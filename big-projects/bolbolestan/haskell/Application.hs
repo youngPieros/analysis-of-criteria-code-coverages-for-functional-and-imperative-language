@@ -7,6 +7,7 @@ module Application
 , Application.getCourse
 , Application.addToWeeklySchedule
 , Application.removeFromWeeklySchedule
+, Application.getStudentWeeklySchedule
 ) where
 
 
@@ -81,4 +82,13 @@ removeFromWeeklySchedule db (RemoveFromWeeklyScheduleArgument sid courseCode)
         courses = getTermCourses scheduleCourses
         scheduleCourses = DataBase.findStudentScheduleCourses db sid
         course = searchCourse db courseCode
+        student = DataBase.findStudent db sid
+
+getStudentWeeklySchedule :: DataBase -> GetWeeklyScheduleArgument -> (DataBase, Response)
+getStudentWeeklySchedule db (GetWeeklyScheduleArgument sid)
+    | student == NullStudent = (db, Response "StudentNotFound")
+    | otherwise = (db, Response (toDTO courses))
+    where
+        courses = getTermCourses scheduleCourses
+        scheduleCourses = DataBase.findStudentScheduleCourses db sid
         student = DataBase.findStudent db sid

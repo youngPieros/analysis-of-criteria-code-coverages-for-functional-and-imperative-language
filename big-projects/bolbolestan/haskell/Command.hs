@@ -15,5 +15,6 @@ data Command =
     GetCourse GetCourseArgument |
     AddToWeeklySchedule AddToWeeklyScheduleArgument |
     RemoveFromWeeklySchedule RemoveFromWeeklyScheduleArgument |
+    GetWeeklySchedule GetWeeklyScheduleArgument |
     BadCommand
 

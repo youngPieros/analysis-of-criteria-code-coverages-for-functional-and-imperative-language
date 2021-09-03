@@ -35,6 +35,7 @@ parseCommand commandName args
     | commandName == "getOffering" = parseGetCourseArgument args
     | commandName == "addToWeeklySchedule" = parseAddToWeeklyScheduleArgument args
     | commandName == "removeFromWeeklySchedule" = parseRemoveFromWeeklyScheduleArgument args
+    | commandName == "getWeeklySchedule" = parseGetWeeklyScheduleArgument args
     | otherwise = BadCommand
 
 
@@ -67,3 +68,9 @@ parseRemoveFromWeeklyScheduleArgument :: String -> Command
 parseRemoveFromWeeklyScheduleArgument json = if Data.Maybe.isJust args then RemoveFromWeeklySchedule (Data.Maybe.fromJust args) else BadCommand
     where
         args = decode (C.pack json) :: Maybe RemoveFromWeeklyScheduleArgument
+
+parseGetWeeklyScheduleArgument :: String -> Command
+parseGetWeeklyScheduleArgument json = if Data.Maybe.isJust args then GetWeeklySchedule (Data.Maybe.fromJust args) else BadCommand
+    where
+        args = decode (C.pack json) :: Maybe GetWeeklyScheduleArgument
+

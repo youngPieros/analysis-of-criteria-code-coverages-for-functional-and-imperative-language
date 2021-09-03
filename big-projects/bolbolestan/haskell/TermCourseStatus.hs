@@ -3,5 +3,8 @@ module TermCourseStatus
 ) where
 
 
-data TermCourseStatus = Finalized | NonFinalized deriving (Show, Read, Enum)
+data TermCourseStatus = Finalized | NonFinalized deriving (Read, Enum)
 
+instance Show TermCourseStatus where
+    show Finalized = "finalized"
+    show NonFinalized = "non-finalized"
