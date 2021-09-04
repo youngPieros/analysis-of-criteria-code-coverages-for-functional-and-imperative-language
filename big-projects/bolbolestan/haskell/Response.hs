@@ -12,7 +12,6 @@ import Data.Aeson
 data Response =
     SuccessResponse String |
     SuccessfulEmptyResponse |
-    ErrorResponse String |
     ConflictOnAddCourse |
     RepetitiveStudentInsertion |
     StudentNotFound |
@@ -30,7 +29,6 @@ data Response =
 instance ToJSON Response where
     toJSON (SuccessResponse response) = object ["success" .= True, "data" .= response]
     toJSON SuccessfulEmptyResponse = object ["success" .= True, "data" .= ("" ++ "")]
-    toJSON (ErrorResponse response) = object ["success" .= False, "error" .= response]
     toJSON ConflictOnAddCourse = object ["success" .= False, "error" .= ("" ++ "This course has conflict in class time with current courses")]
     toJSON RepetitiveStudentInsertion = object ["success" .= False, "error" .= ("" ++ "REPETITIVE STUDENT ID")]
     toJSON StudentNotFound = object ["success" .= False, "error" .= ("" ++ "StudentNotFound")]
@@ -40,7 +38,7 @@ instance ToJSON Response where
     toJSON MinimumUnitsError = object ["success" .= False, "error" .= ("" ++ "MinimumUnitsError")]
     toJSON MaximumUnitsError = object ["success" .= False, "error" .= ("" ++ "MaximumUnitsError")]
     toJSON (ClassTimeCollisionError c1 c2) = object ["success" .= False, "error" .= ("ClassTimeCollisionError " ++ c1 ++ c2)]
-    toJSON (ExamTimeCollisionError c1 c2) = object ["success" .= False, "error" .= ("ExamTimeCollisionError" ++ c1 ++ c2)]
+    toJSON (ExamTimeCollisionError c1 c2) = object ["success" .= False, "error" .= ("ExamTimeCollisionError " ++ c1 ++ c2)]
     toJSON (FullCapacityError c1) = object ["success" .= False, "error" .= ("FullCapacityError" ++ c1)]
     toJSON BadCommand = object ["success" .= False, "error" .= ("BadCommand" ++ "")]
 

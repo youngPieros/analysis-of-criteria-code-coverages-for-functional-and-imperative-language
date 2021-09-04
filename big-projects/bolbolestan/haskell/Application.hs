@@ -121,7 +121,7 @@ finalizeWeeklySchedule db (FinalizeScheduleArgument sid)
     | unitsCourses < minimumUnits = (db, MinimumUnitsError)
     | unitsCourses > maximumUnits = (db, MaximumUnitsError)
     | isJust conflictOnClassTime = (db, ClassTimeCollisionError (fst $ fromJ conflictOnClassTime) (snd $ fromJ conflictOnClassTime))
-    | isJust conflictOnExamTime = (db, ClassTimeCollisionError (fst $ fromJ conflictOnExamTime) (snd $ fromJ conflictOnExamTime))
+    | isJust conflictOnExamTime = (db, ExamTimeCollisionError (fst $ fromJ conflictOnExamTime) (snd $ fromJ conflictOnExamTime))
     | isJust courseWithFullCapacity = (db, FullCapacityError ((\(c, _, _) -> c) (fromJust courseWithFullCapacity)))
     | otherwise = (upsertStudentScheduleCourses db sid (finalizeCourses scheduleCourses), SuccessfulEmptyResponse)
     where
@@ -140,8 +140,6 @@ finalizeWeeklySchedule db (FinalizeScheduleArgument sid)
         minimumUnits = 12
         maximumUnits = 20
         fromJ = (\x -> (\(c1, c2) -> (getCourseCode c1, getCourseCode c2)) (fromJust x))
-        getCapacityError = (\(c, _, _) -> "CapacityError " ++ c)
-        codesString = (\(c1, c2) -> (getCourseCode c1) ++ " " ++ (getCourseCode c2))
         getCode = (\c -> (code :: TermCourse -> String) c)
         getCourseCode = (\c -> (code :: Course -> String) c)
         getExamTime = (\c -> (examTime :: Course -> ExamTime) c)
