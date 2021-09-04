@@ -29,3 +29,7 @@ addToWeeklySchedule {"studentId": "810196560", "code": "81013688"}
 addToWeeklySchedule {"studentId": "810196560", "code": "81013600"}
 getWeeklySchedule {"studentId": "810196560"}
 getWeeklySchedule {"studentId": "810196561"}
+getWeeklySchedule {"studentId": "810196590"}
+finalize {"studentId": "810196560"}
+finalize {"studentId": "810196561"}
+finalize {"studentId": "810196590"}
