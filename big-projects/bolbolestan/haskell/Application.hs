@@ -32,8 +32,8 @@ import Util
 
 addCourse :: DataBase -> AddCourseArgument -> (DataBase, Response)
 addCourse db args
-    | searchedCourse == course = (db, Response "This course has conflict in class time with current courses")
-    | otherwise = (DataBase.addCourse db course, Response "successful")
+    | searchedCourse == course = (db, ConflictOnAddCourse)
+    | otherwise = (DataBase.addCourse db course, SuccessfulEmptyResponse)
     where
         searchedCourse = searchCourse db ((Course.code :: Course -> String) course)
         course = toCourse args
@@ -41,8 +41,8 @@ addCourse db args
 
 addStudent :: DataBase -> AddStudentArgument -> (DataBase, Response)
 addStudent db args
-    | searchedStudent == NullStudent = (DataBase.addStudent db student, Response "Student is successfully registered")
-    | otherwise = (db, Response "There is a student with this studentId")
+    | searchedStudent == NullStudent = (DataBase.addStudent db student, SuccessfulEmptyResponse)
+    | otherwise = (db, RepetitiveStudentInsertion)
     where
         searchedStudent = DataBase.findStudent db ((studentId :: AddStudentArgument -> String) args)
         student = toStudent args
@@ -50,8 +50,8 @@ addStudent db args
 
 getCourses :: DataBase -> GetCoursesArgument -> (DataBase, Response)
 getCourses db args
-    | student == NullStudent = (db, Response "StudentNotFound")
-    | otherwise = (db, Response courses)
+    | student == NullStudent = (db, StudentNotFound)
+    | otherwise = (db, SuccessResponse courses)
     where
         courses = toDTO $ map (toCourseSummary) (Data.List.sort (DataBase.getCourses db))
         student = findStudent db ((studentId :: GetCoursesArgument -> String) args)
@@ -59,9 +59,9 @@ getCourses db args
 
 getCourse :: DataBase -> GetCourseArgument -> (DataBase, Response)
 getCourse db args
-    | student == NullStudent = (db, Response "StudentNotFound")
-    | course == NullCourse = (db, Response "OfferingNotFound")
-    | otherwise = (db, Response (toDTO course))
+    | student == NullStudent = (db, StudentNotFound)
+    | course == NullCourse = (db, OfferingNotFound)
+    | otherwise = (db, SuccessResponse (toDTO course))
     where
         course = searchCourse db ((code :: GetCourseArgument -> String) args)
         student = DataBase.findStudent db ((studentId :: GetCourseArgument -> String) args)
@@ -69,11 +69,11 @@ getCourse db args
 
 addToWeeklySchedule :: DataBase -> AddToWeeklyScheduleArgument -> (DataBase, Response)
 addToWeeklySchedule db (AddToWeeklyScheduleArgument sid courseCode)
-    | student == NullStudent = (db, Response "StudentNotFound")
-    | course == NullCourse = (db, Response "OfferingNotFound")
-    | scheduleCourses == NullSchedule = (upsertStudentScheduleCourses db sid (addTermCourse (createStudentScheduleCourse sid) termCourse), Response "")
-    | elem termCourse (termCourses scheduleCourses) = (db, Response "RepetitiveCourseError")
-    | otherwise = (upsertStudentScheduleCourses db sid (addTermCourse scheduleCourses termCourse), Response "")
+    | student == NullStudent = (db, StudentNotFound)
+    | course == NullCourse = (db, OfferingNotFound)
+    | scheduleCourses == NullSchedule = (upsertStudentScheduleCourses db sid (addTermCourse (createStudentScheduleCourse sid) termCourse), SuccessfulEmptyResponse)
+    | elem termCourse (termCourses scheduleCourses) = (db, RepetitiveCourseError)
+    | otherwise = (upsertStudentScheduleCourses db sid (addTermCourse scheduleCourses termCourse), SuccessfulEmptyResponse)
     where
         scheduleCourses = DataBase.findStudentScheduleCourses db sid
         termCourse = toTermCourse course
@@ -82,10 +82,10 @@ addToWeeklySchedule db (AddToWeeklyScheduleArgument sid courseCode)
 
 removeFromWeeklySchedule :: DataBase -> RemoveFromWeeklyScheduleArgument -> (DataBase, Response)
 removeFromWeeklySchedule db (RemoveFromWeeklyScheduleArgument sid courseCode)
-    | student == NullStudent = (db, Response "StudentNotFound")
-    | course == NullCourse = (db, Response "OfferingNotFound")
-    | courses == [] = (db, Response "User did not schedule this course")
-    | otherwise = (upsertStudentScheduleCourses db sid (removeTermCourse scheduleCourses courseCode), Response "")
+    | student == NullStudent = (db, StudentNotFound)
+    | course == NullCourse = (db, OfferingNotFound)
+    | courses == [] = (db, EmptySchedule)
+    | otherwise = (upsertStudentScheduleCourses db sid (removeTermCourse scheduleCourses courseCode), SuccessfulEmptyResponse)
     where
         courses = getTermCourses scheduleCourses
         scheduleCourses = DataBase.findStudentScheduleCourses db sid
@@ -94,8 +94,8 @@ removeFromWeeklySchedule db (RemoveFromWeeklyScheduleArgument sid courseCode)
 
 getStudentWeeklySchedule :: DataBase -> GetWeeklyScheduleArgument -> (DataBase, Response)
 getStudentWeeklySchedule db (GetWeeklyScheduleArgument sid)
-    | student == NullStudent = (db, Response "StudentNotFound")
-    | otherwise = (db, Response (toDTO courses))
+    | student == NullStudent = (db, StudentNotFound)
+    | otherwise = (db, SuccessResponse (toDTO courses))
     where
         courses = getTermCourses scheduleCourses
         scheduleCourses = DataBase.findStudentScheduleCourses db sid
@@ -116,14 +116,14 @@ getCoursesCapacities db coursesCodes = result
 
 finalizeWeeklySchedule :: DataBase -> FinalizeScheduleArgument -> (DataBase, Response)
 finalizeWeeklySchedule db (FinalizeScheduleArgument sid)
-    | student == NullStudent = (db, Response "StudentNotFound")
-    | studentTermCourses == [] || nonFinalizedCourses == [] = (db, Response "Student did not add new course to his schedule courses")
-    | unitsCourses < minimumUnits = (db, Response "MinimumUnitsError")
-    | unitsCourses > maximumUnits = (db, Response "MaximumUnitsError")
-    | isJust conflictOnClassTime = (db, Response ("ClassTimeCollisionError " ++ (codesString (fromJust conflictOnClassTime))))
-    | isJust conflictOnExamTime = (db, Response ("ExamTimeCollisionError " ++ (codesString (fromJust conflictOnExamTime))))
-    | isJust courseWithFullCapacity = (db, Response (getCapacityError (fromJust courseWithFullCapacity)))
-    | otherwise = (upsertStudentScheduleCourses db sid (finalizeCourses scheduleCourses), Response "")
+    | student == NullStudent = (db, StudentNotFound)
+    | studentTermCourses == [] || nonFinalizedCourses == [] = (db, EmptySchedule)
+    | unitsCourses < minimumUnits = (db, MinimumUnitsError)
+    | unitsCourses > maximumUnits = (db, MaximumUnitsError)
+    | isJust conflictOnClassTime = (db, ClassTimeCollisionError (fst $ fromJ conflictOnClassTime) (snd $ fromJ conflictOnClassTime))
+    | isJust conflictOnExamTime = (db, ClassTimeCollisionError (fst $ fromJ conflictOnExamTime) (snd $ fromJ conflictOnExamTime))
+    | isJust courseWithFullCapacity = (db, FullCapacityError ((\(c, _, _) -> c) (fromJust courseWithFullCapacity)))
+    | otherwise = (upsertStudentScheduleCourses db sid (finalizeCourses scheduleCourses), SuccessfulEmptyResponse)
     where
         conflictOnClassTime = find (\(c1, c2) -> ClassTime.conflict (getClassTime c1) (getClassTime c2)) (toOrderedPais courses)
         conflictOnExamTime = find (\(c1, c2) -> ExamTime.conflict (getExamTime c1) (getExamTime c2)) (toOrderedPais courses)
@@ -139,6 +139,7 @@ finalizeWeeklySchedule db (FinalizeScheduleArgument sid)
         student = DataBase.findStudent db sid
         minimumUnits = 12
         maximumUnits = 20
+        fromJ = (\x -> (\(c1, c2) -> (getCourseCode c1, getCourseCode c2)) (fromJust x))
         getCapacityError = (\(c, _, _) -> "CapacityError " ++ c)
         codesString = (\(c1, c2) -> (getCourseCode c1) ++ " " ++ (getCourseCode c2))
         getCode = (\c -> (code :: TermCourse -> String) c)
