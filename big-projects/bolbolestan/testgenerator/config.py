@@ -17,7 +17,7 @@ DAYS = {
     3: [['Sunday', 'Tuesday'], ['Saturday', 'Monday'], ['Monday', 'Wednesday']]
 }
 CLASS_TIMES = ["7:3-9", "9-10:30", "10:30-12", "14-15:30", "16-17:30"]
-EXAM_DATES = ["2022-1-0" + str(i) for i in range(1, 10)]
+EXAM_DATES = ["2022-01-0" + str(i) for i in range(1, 10)]
 EXAM_TIMES = [
     ["08:00:00", "09:00:00"],
     ["09:00:00", "10:00:00"],
