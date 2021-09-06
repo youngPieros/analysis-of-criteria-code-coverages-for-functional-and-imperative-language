@@ -230,7 +230,7 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
     exit 1
   fi
   if [[ $ignore_report = false ]]; then
-    (java -jar ./jacococli.jar report ./jacoco.exec --html ./report --sourcefiles ./bin/ --classfiles ./bin/classes) |& cat >> log
+    (java -jar ./jacococli.jar report ./jacoco.exec --html ./report --sourcefiles ./bin/java/ --classfiles ./bin/classes) |& cat >> log
   fi
   cd ../..
 fi
@@ -261,13 +261,19 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   if [[ $ignore_report = true ]]; then
     cd ../../..
   else
-    temp_out=$(hpc markup Main)
     mkdir -p ../report
+    temp_out=$(hpc markup Main)
     cp *.html ../report
+    hpc report Main > ../report/reportfile
     cd ../report
-    cp ../../../resources/haskell/haskell_html_report_generator.py ./
+    cp ../../../resources/haskell/* ./
+    unzip -qq haskell-report-resources.zip
+    rm haskell-report-resources.zip
+    python3 haskell_textual_report_generator.py < reportfile > haskell_textual_report.html
     for h_report in ${haskell_reports[@]}; do
       python3 haskell_html_report_generator.py $h_report
+      cp $h_report temp
+      cat haskell_textual_report.html temp > $h_report
     done
     rm haskell_html_report_generator.py
     cd ../../..
