@@ -37,8 +37,8 @@ instance ToJSON Response where
     toJSON EmptySchedule = object ["success" .= False, "error" .= ("" ++ "EmptySchedule")]
     toJSON MinimumUnitsError = object ["success" .= False, "error" .= ("" ++ "MinimumUnitsError")]
     toJSON MaximumUnitsError = object ["success" .= False, "error" .= ("" ++ "MaximumUnitsError")]
-    toJSON (ClassTimeCollisionError c1 c2) = object ["success" .= False, "error" .= ("ClassTimeCollisionError " ++ c1 ++ c2)]
-    toJSON (ExamTimeCollisionError c1 c2) = object ["success" .= False, "error" .= ("ExamTimeCollisionError " ++ c1 ++ c2)]
-    toJSON (FullCapacityError c1) = object ["success" .= False, "error" .= ("FullCapacityError" ++ c1)]
+    toJSON (ClassTimeCollisionError c1 c2) = object ["success" .= False, "error" .= ("ClassTimeCollisionError " ++ c1 ++ " " ++ c2)]
+    toJSON (ExamTimeCollisionError c1 c2) = object ["success" .= False, "error" .= ("ExamTimeCollisionError " ++ c1 ++ " " ++ c2)]
+    toJSON (FullCapacityError c1) = object ["success" .= False, "error" .= ("FullCapacityError " ++ c1)]
     toJSON BadCommand = object ["success" .= False, "error" .= ("BadCommand" ++ "")]
 
