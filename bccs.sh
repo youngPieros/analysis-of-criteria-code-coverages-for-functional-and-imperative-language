@@ -218,7 +218,7 @@ if [[ $run_java = true || $run_java_haskell = true ]]; then
     echo "# Error: failed in execute java program. check ./bin/$main_folder/java_execution_log"
     exit 1
   fi
-  (java -jar ./jacococli.jar report ./jacoco.exec --html ./report --sourcefiles ./bin/ --classfiles ./bin/classes) |& cat >> log
+  (java -jar ./jacococli.jar report ./jacoco.exec --html ./report --sourcefiles ./bin/java/ --classfiles ./bin/classes) |& cat >> log
   cd ../..
 fi
 # run haskell code with test cases and generate report
@@ -246,15 +246,23 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
     echo "# Error: failed in execute haskell program. check ./bin/$main_folder/haskell_execution_log"
     exit 1
   fi
-  temp_out=$(hpc markup Main)
   mkdir -p ../report
+  temp_out=$(hpc markup Main)
   cp *.html ../report
+  hpc report Main > ../report/reportfile
   cd ../report
-  cp ../../../resources/haskell/haskell_html_report_generator.py ./
+  cp ../../../resources/haskell/* ./
+  unzip -qq haskell-report-resources.zip
+  python3 haskell_textual_report_generator.py < reportfile > haskell_textual_report.html
   for h_report in ${haskell_reports[@]}; do
     python3 haskell_html_report_generator.py $h_report
+    cp $h_report temp
+    cat haskell_textual_report.html temp > $h_report
   done
   rm haskell_html_report_generator.py
+  rm haskell_textual_report_generator.py
+  rm haskell-report-resources.zip
+  rm temp
   cd ../../..
 fi
 

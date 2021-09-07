@@ -268,7 +268,6 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
     cd ../report
     cp ../../../resources/haskell/* ./
     unzip -qq haskell-report-resources.zip
-    rm haskell-report-resources.zip
     python3 haskell_textual_report_generator.py < reportfile > haskell_textual_report.html
     for h_report in ${haskell_reports[@]}; do
       python3 haskell_html_report_generator.py $h_report
@@ -276,6 +275,9 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
       cat haskell_textual_report.html temp > $h_report
     done
     rm haskell_html_report_generator.py
+    rm haskell_textual_report_generator.py
+    rm haskell-report-resources.zip
+    rm temp
     cd ../../..
   fi
 fi

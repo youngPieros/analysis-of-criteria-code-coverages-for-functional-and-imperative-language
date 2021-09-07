@@ -173,14 +173,21 @@ if [[ $run_haskell = true || $run_java_haskell = true ]]; then
   fi
   mkdir -p ../report/haskell
   temp_out=$(hpc markup Main)
-  mkdir -p ../report/haskell
   cp *.html ../report/haskell
+  hpc report Main > ../report/haskell/reportfile
   cd ../report/haskell
-  cp ../../../../../resources/haskell/haskell_html_report_generator.py ./
+  cp ../../../../../resources/haskell/* ./
+  unzip -qq haskell-report-resources.zip
+  python3 haskell_textual_report_generator.py < reportfile > haskell_textual_report.html
   for h_report in ${haskell_reports[@]}; do
     python3 haskell_html_report_generator.py $h_report
+    cp $h_report temp
+    cat haskell_textual_report.html temp > $h_report
   done
   rm haskell_html_report_generator.py
+  rm haskell_textual_report_generator.py
+  rm haskell-report-resources.zip
+  rm temp
   echo "haskell was compiled and ran successfully and report is generated"
   cd ../../../../..
 fi
