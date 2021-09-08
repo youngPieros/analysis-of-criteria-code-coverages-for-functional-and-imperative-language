@@ -1,8 +1,10 @@
 import config
 from random import randint
 
-number_of_testcases = config.number_of_testcases_with_available_searched_member + config.number_of_testcases_without_available_searched_member
-print(number_of_testcases)
+number_of_testcases = config.number_of_testcases_with_available_searched_member + \
+                      config.number_of_testcases_without_available_searched_member
+print(number_of_testcases + config.contain_empty_array_test)
+
 for i in range(number_of_testcases):
     collection = [2 * j + 1 for j in range(config.size_of_searched_collection)]
     searched_member = 0
@@ -16,4 +18,7 @@ for i in range(number_of_testcases):
     for member in collection:
         print(member, end=" ")
     print()
+
+if config.contain_empty_array_test:
+    print("0 10")
 
