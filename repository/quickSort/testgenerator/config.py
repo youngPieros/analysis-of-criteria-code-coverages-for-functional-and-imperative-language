@@ -1,1 +1,1 @@
-number_counts = 10
+number_counts = 100

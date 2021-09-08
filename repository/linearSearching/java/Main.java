@@ -25,6 +25,8 @@ public class Main {
     }
 
     public int findWithLinearSearchAlgorithm(int number, ArrayList<Integer> numbers) {
+        if (numbers.size() == 0)
+            return -1;
         for (int i = 0; i < numbers.size(); i++)
             if (numbers.get(i) == number)
                 return i;

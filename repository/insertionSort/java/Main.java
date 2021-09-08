@@ -1,4 +1,4 @@
-package insertationSort.java;
+package insertionSort.java;
 
 import java.util.Scanner;
 

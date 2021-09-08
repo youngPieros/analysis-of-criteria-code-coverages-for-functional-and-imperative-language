@@ -1,7 +1,11 @@
 linearSearch :: (Eq a) => a -> [a] -> Int
 linearSearch _ [] = -1
-linearSearch a (x:xs) = if x == a then 0 else (if (indexOfTailSearch == -1) then (-1) else (1 + indexOfTailSearch))
-	where indexOfTailSearch = linearSearch a xs
+linearSearch a (x:xs)
+    | x == a = 0
+    | indexOfTailSearch == -1 = -1
+    | otherwise = indexOfTailSearch + 1
+	where
+	    indexOfTailSearch = linearSearch a xs
 
 
 toInt :: String -> Int
