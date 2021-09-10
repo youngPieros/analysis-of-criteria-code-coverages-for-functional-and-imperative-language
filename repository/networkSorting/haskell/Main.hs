@@ -20,8 +20,8 @@ isSubLayerValid layer = all (\x -> length (filter (==x) filteredLayer) == 2) fil
 isValidNetwork :: [String] -> Bool
 isValidNetwork network = all (\net -> isSubLayerValid net) (transpose network)
 
-reorderNumbersBasedOnSubnet :: [Char] -> [Int] -> [Int]
-reorderNumbersBasedOnSubnet layer numbers = map snd (sort $ map (\(a, b) -> (b, a)) (concat sortedLayer ++ unsortedNumbers))
+applyStage :: [Char] -> [Int] -> [Int]
+applyStage layer numbers = map snd (sort $ map (\(a, b) -> (b, a)) (concat sortedLayer ++ unsortedNumbers))
  where
 	sortedLayer = map (\[a, b] -> [(min (fst a) (fst b), min (snd a) (snd b)), (max (fst a) (fst b), max (snd a) (snd b))]) numberLayers
 	numberLayers = chunksOf 2 (zip (map (\(_, b, _) -> b) matchedPackets) (map (\(_, _, c) -> c) matchedPackets))
@@ -30,8 +30,17 @@ reorderNumbersBasedOnSubnet layer numbers = map snd (sort $ map (\(a, b) -> (b, 
 	matchedPackets = filter (\(char, _, _) -> char /= '-') sortedZipLayer
 	sortedZipLayer = sort (zip3 layer numbers [0..length layer])
 
-reorderNumbersBasedOnNetwork :: [String] -> [Int] -> [Int]
-reorderNumbersBasedOnNetwork network numbers = foldl (\reorderedNumbers sublayer -> reorderNumbersBasedOnSubnet sublayer reorderedNumbers) numbers (transpose network)
+apply :: [String] -> [Int] -> [Int]
+apply network numbers = foldl (\reorderedNumbers sublayer -> applyStage sublayer reorderedNumbers) numbers (transpose network)
+
+process :: [String] -> [Int] -> String
+process network numbers
+    | not $ isValidNetwork network = "Invalid network"
+    | isSorted = "Sorted"
+    | otherwise = "Not Sorted"
+    where
+        isSorted = all (\(a, b) -> a <= b) (zip (init reorderNumbers) (tail reorderNumbers))
+        reorderNumbers = apply network numbers
 
 getInputs = do
   args <- getLine
@@ -52,16 +61,8 @@ handleNetwork = do
     arguments <- getNetwork
     let network = fst arguments
     let numbers = snd arguments
-    let isValid = isValidNetwork network
-    when (not isValid) $ do
-      putStrLn ("Invalid network")
-    when (isValid) $ do
-      let reorderNumbers = reorderNumbersBasedOnNetwork network numbers
-      let isSorted = all (\(a, b) -> a <= b) (zip (init reorderNumbers) (tail reorderNumbers))
-      when (isSorted) $ do
-        putStrLn("Sorted")
-      when (not isSorted) $ do
-        putStrLn("Not Sorted")
+    let result = process network numbers
+    putStrLn result
     handleNetwork
 
 

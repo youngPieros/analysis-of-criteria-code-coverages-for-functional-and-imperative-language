@@ -17,6 +17,7 @@ import Data.Function
 import Data.Maybe
 
 import DataBase
+import DataAccess
 import Response
 import CommandArguments
 import DataMapper
@@ -30,10 +31,11 @@ import ExamTime
 import ClassTime
 import Util
 
+
 addCourse :: DataBase -> AddCourseArgument -> (DataBase, Response)
 addCourse db args
     | searchedCourse == course = (db, ConflictOnAddCourse)
-    | otherwise = (DataBase.addCourse db course, SuccessfulEmptyResponse)
+    | otherwise = (DataAccess.addCourse db course, SuccessfulEmptyResponse)
     where
         searchedCourse = searchCourse db ((Course.code :: Course -> String) course)
         course = toCourse args
@@ -41,10 +43,10 @@ addCourse db args
 
 addStudent :: DataBase -> AddStudentArgument -> (DataBase, Response)
 addStudent db args
-    | searchedStudent == NullStudent = (DataBase.addStudent db student, SuccessfulEmptyResponse)
+    | searchedStudent == NullStudent = (DataAccess.addStudent db student, SuccessfulEmptyResponse)
     | otherwise = (db, RepetitiveStudentInsertion)
     where
-        searchedStudent = DataBase.findStudent db ((studentId :: AddStudentArgument -> String) args)
+        searchedStudent = DataAccess.findStudent db ((studentId :: AddStudentArgument -> String) args)
         student = toStudent args
 
 
@@ -53,7 +55,7 @@ getCourses db args
     | student == NullStudent = (db, StudentNotFound)
     | otherwise = (db, SuccessResponse courses)
     where
-        courses = toDTO $ map (toCourseSummary) (Data.List.sort (DataBase.getCourses db))
+        courses = toDTO $ map (toCourseSummary) (DataAccess.getCourses db)
         student = findStudent db ((studentId :: GetCoursesArgument -> String) args)
 
 
@@ -64,7 +66,7 @@ getCourse db args
     | otherwise = (db, SuccessResponse (toDTO course))
     where
         course = searchCourse db ((code :: GetCourseArgument -> String) args)
-        student = DataBase.findStudent db ((studentId :: GetCourseArgument -> String) args)
+        student = DataAccess.findStudent db ((studentId :: GetCourseArgument -> String) args)
 
 
 addToWeeklySchedule :: DataBase -> AddToWeeklyScheduleArgument -> (DataBase, Response)
@@ -75,10 +77,10 @@ addToWeeklySchedule db (AddToWeeklyScheduleArgument sid courseCode)
     | elem termCourse (termCourses scheduleCourses) = (db, RepetitiveCourseError)
     | otherwise = (upsertStudentScheduleCourses db sid (addTermCourse scheduleCourses termCourse), SuccessfulEmptyResponse)
     where
-        scheduleCourses = DataBase.findStudentScheduleCourses db sid
+        scheduleCourses = DataAccess.findStudentScheduleCourses db sid
         termCourse = toTermCourse course
         course = searchCourse db courseCode
-        student = DataBase.findStudent db sid
+        student = DataAccess.findStudent db sid
 
 removeFromWeeklySchedule :: DataBase -> RemoveFromWeeklyScheduleArgument -> (DataBase, Response)
 removeFromWeeklySchedule db (RemoveFromWeeklyScheduleArgument sid courseCode)
@@ -88,9 +90,9 @@ removeFromWeeklySchedule db (RemoveFromWeeklyScheduleArgument sid courseCode)
     | otherwise = (upsertStudentScheduleCourses db sid (removeTermCourse scheduleCourses courseCode), SuccessfulEmptyResponse)
     where
         courses = getTermCourses scheduleCourses
-        scheduleCourses = DataBase.findStudentScheduleCourses db sid
+        scheduleCourses = DataAccess.findStudentScheduleCourses db sid
         course = searchCourse db courseCode
-        student = DataBase.findStudent db sid
+        student = DataAccess.findStudent db sid
 
 getStudentWeeklySchedule :: DataBase -> GetWeeklyScheduleArgument -> (DataBase, Response)
 getStudentWeeklySchedule db (GetWeeklyScheduleArgument sid)
@@ -98,8 +100,8 @@ getStudentWeeklySchedule db (GetWeeklyScheduleArgument sid)
     | otherwise = (db, SuccessResponse (toDTO courses))
     where
         courses = getTermCourses scheduleCourses
-        scheduleCourses = DataBase.findStudentScheduleCourses db sid
-        student = DataBase.findStudent db sid
+        scheduleCourses = DataAccess.findStudentScheduleCourses db sid
+        student = DataAccess.findStudent db sid
 
 getCoursesCapacities :: DataBase -> [String] -> [(String, Int, Int)]
 getCoursesCapacities db coursesCodes = result
@@ -135,8 +137,8 @@ finalizeWeeklySchedule db (FinalizeScheduleArgument sid)
         nonFinalizedCourses = filter (\c -> status c == NonFinalized) studentTermCourses
         coursesCodes = map (\c -> getCode c) studentTermCourses
         studentTermCourses = getTermCourses scheduleCourses
-        scheduleCourses = DataBase.findStudentScheduleCourses db sid
-        student = DataBase.findStudent db sid
+        scheduleCourses = DataAccess.findStudentScheduleCourses db sid
+        student = DataAccess.findStudent db sid
         minimumUnits = 12
         maximumUnits = 20
         fromJ = (\x -> (\(c1, c2) -> (getCourseCode c1, getCourseCode c2)) (fromJust x))

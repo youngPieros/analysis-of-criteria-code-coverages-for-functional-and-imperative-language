@@ -31,8 +31,11 @@ pair = liftA2 (,)
 main :: IO ()
 main = C.interact $ runScanner (C.pack <$> runScript)
 
+
+
 type Point = (Int, Int)
-data Direction = UP | DOWN | RIGHT | LEFT | RIGHT_UP | RIGHT_DOWN | LEFT_UP | LEFT_DOWN | NULL deriving(Eq)
+data Direction = UP | DOWN | RIGHT | LEFT | RIGHT_UP | RIGHT_DOWN | LEFT_UP | LEFT_DOWN | NULL deriving(Eq, Show, Ord)
+
 
 get_direction_to :: Point -> Point -> Direction
 get_direction_to (r1, c1) (r2, c2)
@@ -46,18 +49,8 @@ get_direction_to (r1, c1) (r2, c2)
 
 get_distance :: Point -> Point -> Int
 get_distance (r1, c1) (r2, c2)
-  | r1 == r2 = abs (c1 - c2)
-  | otherwise = abs (r1 - r2)
-
-get_direction_number :: Direction -> Int
-get_direction_number UP = 1
-get_direction_number DOWN = 2
-get_direction_number RIGHT = 3
-get_direction_number LEFT = 4
-get_direction_number RIGHT_UP = 5
-get_direction_number RIGHT_DOWN = 6
-get_direction_number LEFT_UP = 7
-get_direction_number LEFT_DOWN = 8
+  | r1 == r2 = (abs (c1 - c2)) - 1
+  | otherwise = (abs (r1 - r2)) - 1
 
 runScript :: Scanner String
 runScript = do
@@ -77,10 +70,11 @@ zipMapR x arr = map (\(x, y) -> (y, x)) (zipMap x arr)
 solve :: Int -> Point -> [Point] -> Int
 solve n queen_position obstacles = sum nearestDistanceObstacles
   where
-    nearestDistanceObstacles = map (\obstaclesGroup -> (foldl (\acc (d, obs) -> min acc ((get_distance queen_position obs) - 1)) n obstaclesGroup)) groupedObstacles
+    nearestDistanceObstacles = map (foldl1 min) distancesPerGroup
+    distancesPerGroup = map (map (\(_, position) -> get_distance queen_position position)) groupedObstacles
     groupedObstacles = groupBy ((==) `on` fst) sortedObstacles
-    sortedObstacles = sort $ map (\(direction, obstacle) -> (get_direction_number direction, obstacle)) filteredObstacles
-    filteredObstacles = filter (\(direction, obstacle) -> direction /= NULL) obstaclesWithDirections
+    sortedObstacles = sort filteredObstacles
+    filteredObstacles = filter (\(direction, obstacle) -> direction < NULL || direction > NULL) obstaclesWithDirections
     obstaclesWithDirections = map (\obstacle -> (get_direction_to queen_position obstacle, obstacle)) wrapped_obstacles
     wrapped_obstacles = margin_obstacles ++ obstacles
     margin_obstacles = (zipMap 0 [0..n+1]) ++  (zipMap (n+1) [0..n+1]) ++ (zipMapR 0 [1..n]) ++ (zipMapR (n+1) [1..n])

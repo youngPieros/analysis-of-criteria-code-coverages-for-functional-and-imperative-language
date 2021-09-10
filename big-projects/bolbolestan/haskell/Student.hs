@@ -19,7 +19,3 @@ instance Eq Student where
     Student s1 _ _ == Student s2 _ _ = s1 == s2
     _ == _ = False
 
-instance ToJSON Student where
-    toJSON (Student studentId name enteredAt) =
-        object ["studentId" .= studentId, "name" .= name, "enteredAt" .= enteredAt]
-

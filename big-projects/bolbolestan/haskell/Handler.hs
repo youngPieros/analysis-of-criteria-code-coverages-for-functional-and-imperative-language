@@ -16,27 +16,26 @@ import DTO
 type Scanner = State [C.ByteString]
 type SystemState = (DataBase, [Response])
 
-
-changeSystemState :: SystemState -> (DataBase, Response) -> SystemState
-changeSystemState systemState (database, response) = (database, snd systemState ++ [response])
-
 runScanner :: Scanner a -> C.ByteString -> a
 runScanner = runScannerWith C.lines
 
 runScannerWith :: (C.ByteString -> [C.ByteString]) -> Scanner a -> C.ByteString -> a
 runScannerWith t s = evalState s . t
 
-runScript :: Scanner String
-runScript = do
+changeSystemState :: SystemState -> (DataBase, Response) -> SystemState
+changeSystemState systemState (database, response) = (database, snd systemState ++ [response])
+
+runProgram :: Scanner String
+runProgram = do
     commands <- parseCommands
     let database = getEmptyDataBase
-    let systemState = foldl (\ss command -> changeSystemState ss (runCommand command (fst ss))) (database, []) commands
+    let systemState = foldl (\ss command -> changeSystemState ss (exec command (fst ss))) (database, []) commands
     let responses = unlines $ map (toDTO) (snd systemState)
     return responses
 
 
-runCommand :: Command -> DataBase -> (DataBase, Response)
-runCommand command database = case command of
+exec :: Command -> DataBase -> (DataBase, Response)
+exec command database = case command of
     AddCourse args -> Application.addCourse database args
     AddStudent args -> Application.addStudent database args
     GetCourses args -> Application.getCourses database args
@@ -49,4 +48,4 @@ runCommand command database = case command of
 
 
 run :: IO ()
-run = C.interact $ runScanner (C.pack <$> runScript)
+run = C.interact $ runScanner (C.pack <$> runProgram)

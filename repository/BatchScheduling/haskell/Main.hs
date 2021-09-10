@@ -59,10 +59,13 @@ solve task tasks = (newOrderOfTasks, result)
     minutes = map (\task -> snd task) newOrderOfTasks
     newOrderOfTasks = binaryInsert isSmallerThan task tasks
 
+mergeStates :: ([Task], [Int]) -> ([Task], Int) -> ([Task], [Int])
+mergeStates (_, results) (tasks, result) = (tasks, results ++ [result])
+
 runScript :: Scanner String
 runScript = do
   numberOfTasks <- int
   tasks <- times numberOfTasks getTask
-  let results = foldl (\acc x -> acc ++ [(solve x (fst $ last acc))]) [([], 0)] tasks
-  let output = tail $ map (\res -> snd res) results
+  let results = foldl (\acc x -> mergeStates acc (solve x (fst acc))) ([], []) tasks
+  let output = snd results
   return (unlines $ map (\x -> show x :: String) output)

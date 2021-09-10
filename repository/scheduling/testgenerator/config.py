@@ -1,1 +1,1 @@
-number_of_tasks = 10
+number_of_tasks = 50

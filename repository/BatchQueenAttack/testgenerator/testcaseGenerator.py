@@ -3,8 +3,10 @@ import random
 
 testcases_files = []
 
+
 def random_pos(n):
     return random.randint(1, n), random.randint(1, n)
+
 
 def create_testcase(n, k, queen_pos, obstacles):
     testcase = "{} {}\n".format(n, k)
@@ -15,6 +17,7 @@ def create_testcase(n, k, queen_pos, obstacles):
 
 
 testcases_files = []
+
 
 for n in config.n_range:
     for k in config.k_range:
