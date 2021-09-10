@@ -5,11 +5,11 @@ bash ccs.sh linearSearching -dc
 bash ccs.sh binarySearch -dc
 
 # sort algorithms
-bash ccs.sh bubbleSort -dc
-bash ccs.sh insertionSort -dc
-bash ccs.sh mergeSort -dc
-bash ccs.sh quickSort -dc
-bash ccs.sh selectionSort -dc
+bash ccs.sh bubbleSort -dc -bt
+bash ccs.sh insertionSort -dc -bt
+bash ccs.sh mergeSort -dc -bt
+bash ccs.sh quickSort -dc -bt
+bash ccs.sh selectionSort -dc -bt
 
 # complex sorting
 bash ccs.sh networkSorting -dc

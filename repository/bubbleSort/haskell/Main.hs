@@ -3,7 +3,6 @@ bubbleSort [] = []
 bubbleSort array = foldl (\acc num -> ((shiftMaxBubble (take num acc)) ++ (drop num acc))) array (reverse [1..length array])
 
 shiftMaxBubble :: (Ord a) => [a] -> [a]
-shiftMaxBubble [] = []
 shiftMaxBubble [a] = [a]
 shiftMaxBubble array = minBubble:shiftMaxBubble (maxBubble:(drop 2 array))
  where 
@@ -20,6 +19,5 @@ main = do
   numberCounts <- getLine
   args <- getLine
   let inputs = parseInputs  (words args)
-  let maxBubble = max (head inputs) (head.tail $ inputs)
   let sortedNumbers =  bubbleSort inputs
   putStrLn ("sorted:\n" ++ (show sortedNumbers :: String))

@@ -1,6 +1,5 @@
 binarySearchWithRange :: (Ord a) => a -> [a] -> Int -> Int -> Int
-binarySearchWithRange _ [] _ _ = -1
-binarySearchWithRange a members firstRange endRange 
+binarySearchWithRange a members firstRange endRange
  | firstRange >= endRange = -1
  | members !! middleIndex == a = middleIndex
  | (members !! middleIndex) > a = binarySearchWithRange a members firstRange middleIndex

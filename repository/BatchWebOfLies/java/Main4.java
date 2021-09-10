@@ -27,23 +27,6 @@ public class Main4 {
             return Integer.parseInt(next());
         }
 
-        long nextLong() {
-            return Long.parseLong(next());
-        }
-
-        double nextDouble() {
-            return Double.parseDouble(next());
-        }
-
-        String nextLine() {
-            String str = "";
-            try {
-                str = br.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return str;
-        }
     }
     public static void main(String[] args) throws IOException {
         FastReader input = new FastReader();

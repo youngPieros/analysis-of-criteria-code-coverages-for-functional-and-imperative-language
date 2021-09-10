@@ -133,66 +133,6 @@
 
 	out.close();
 				}
-	    
-							static class special{
-								boolean bool;
-								long n;
-								//int id;
-								special(boolean bool,long n)
-								{
-									this.bool=bool;
-									this.n=n;
-								}
-								@Override
-								    public int hashCode() {
-							                int hash = 7;
-				    hash = 31 * hash + (int) n;
-				   
-				    return hash;
-							            }
-							              @Override
-							            public boolean equals(Object o){
-							                if (o == this) return true;
-							                if (o.getClass() != getClass()) return false;
-							                special t = (special)o;
-							                return t.bool == bool && t.n == n;
-							            }
-							}
-
-							   
-							     static long binexp(long a,long n)
-							    {
-							        if(n==0)
-							            return 1;
-							        long res=binexp(a,n/2);
-							        if(n%2==1)
-							            return res*res*a;
-							        else 
-							            return res*res;
-							    }
-							     
-							    static long powMod(long base, long exp, long mod) {
-							           if (base == 0 || base == 1) return base;
-							           if (exp == 0) return 1;
-							           if (exp == 1) return (base % mod+mod)%mod;
-							           long R = (powMod(base, exp/2, mod) % mod+mod)%mod;
-							           R *= R;
-							           R %= mod;
-							           if ((exp & 1) == 1) {
-							               return (base * R % mod+mod)%mod;
-							           }
-							           else return (R %mod+mod)%mod;
-							       }
-							    static double dis(double x1,double y1,double x2,double y2)
-							    {
-							        return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
-							    }
-							    static long mod(long x,long y)
-							        {
-							            if(x<0)
-							                x=x+(-x/y+1)*y;
-							            return x%y;
-							        }
 							     public static  long pow(long b, long e) {
 							                long r = 1;
 							                while (e > 0) {
@@ -202,20 +142,6 @@
 							                }
 							                return r;
 							            }
-							    private static void sort(long[] arr) {
-							            List<Long> list = new ArrayList<>();
-							            for (long object : arr) list.add(object);
-							            Collections.sort(list);
-							        //Collections.reverse(list);
-							            for (int i = 0; i < list.size(); ++i) arr[i] = list.get(i);
-							        }
-							    private static void sort2(long[] arr) {
-							            List<Long> list = new ArrayList<>();
-							            for (Long object : arr) list.add(object);
-							            Collections.sort(list);
-							        Collections.reverse(list);
-							            for (int i = 0; i < list.size(); ++i) arr[i] = list.get(i);
-							        }
 							     static class FastScanner
 					{
 					    private int BS = 1 << 16;
@@ -255,22 +181,6 @@
 					        return (int) nextLong();
 					    }
 					 
-					    public int[] nextInts(int N) {
-					        int[] res = new int[N];
-					        for (int i = 0; i < N; i++) {
-					            res[i] = (int) nextLong();
-					        }
-					        return res;
-					    }
-					 
-					    public long[] nextLongs(int N) {
-					        long[] res = new long[N];
-					        for (int i = 0; i < N; i++) {
-					            res[i] = nextLong();
-					        }
-					        return res;
-					    }
-					 
 					    public long nextLong() {
 					        cnt = 1;
 					        boolean neg = false;
@@ -285,87 +195,8 @@
 					        }
 					        return neg ? -res : res;
 					    }
-					 
-					    public double nextDouble() {
-					        double cur = nextLong();
-					        return c != '.' ? cur : cur + nextLong() / cnt;
-					    }
-					 
-					    public double[] nextDoubles(int N) {
-					        double[] res = new double[N];
-					        for (int i = 0; i < N; i++) {
-					            res[i] = nextDouble();
-					        }
-					        return res;
-					    }
-					 
-					    public String next() {
-					        StringBuilder res = new StringBuilder();
-					        while (c <= 32) c = getChar();
-					        while (c > 32) {
-					            res.append(c);
-					            c = getChar();
-					        }
-					        return res.toString();
-					    }
-					 
-					    public String nextLine() {
-					        StringBuilder res = new StringBuilder();
-					        while (c <= 32) c = getChar();
-					        while (c != '\n') {
-					            res.append(c);
-					            c = getChar();
-					        }
-					        return res.toString();
-					    }
-					 
-					    public boolean hasNext() {
-					        if (c > 32) return true;
-					        while (true) {
-					            c = getChar();
-					            if (c == NC) return false;
-					            else if (c > 32) return true;
-					        }
-					    }
 					}
 
-							     static class Pair implements Comparable<Pair>{
-							            public long x, y,z;
-							            public Pair(long x1, long y1,long z1) {
-							                x=x1;
-							                y=y1;
-							                z=z1;
-							            }
-							             public Pair(long x1, long y1) {
-							                x=x1;
-							                y=y1;
-							    
-							            }
-							            
-							            @Override
-							            public int hashCode() {
-							                return (int)(x + 31 * y);
-							            }
-							            public String toString() {
-							                return x + " " + y+" "+z;
-							            }
-							            @Override
-							            public boolean equals(Object o){
-							                if (o == this) return true;
-							                if (o.getClass() != getClass()) return false;
-							                Pair t = (Pair)o;
-							                return t.x == x && t.y == y&&t.z==z;
-							            }
-							    public int compareTo(Pair o)
-							    {
-							    	
-							   
-							    	return (int)(o.x-x);
-							     
-							        }
-							     
-							    }
-							    
 							    }
 
 							     

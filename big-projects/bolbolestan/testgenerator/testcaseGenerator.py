@@ -236,7 +236,7 @@ def generate_commands():
     commands += generate_get_weekly_schedule(config.CommandsConfig.GET_WEEKLY_SCHEDULE)
     commands += generate_add_weekly_schedule_courses(config.CommandsConfig.ADD_TO_WEEKLY_SCHEDULE)
     commands += generate_get_weekly_schedule(config.CommandsConfig.GET_WEEKLY_SCHEDULE)
-    commands += generate_remove_weekly_schedule_courses(config.CommandsConfig.REMOVE_FROM_WEEKLY_SCHEDULE)
+    # commands += generate_remove_weekly_schedule_courses(config.CommandsConfig.REMOVE_FROM_WEEKLY_SCHEDULE)
     commands += generate_get_weekly_schedule(config.CommandsConfig.GET_WEEKLY_SCHEDULE)
     commands += generate_finalize_commands(config.CommandsConfig.FINALIZE)
     commands += generate_get_weekly_schedule(config.CommandsConfig.GET_WEEKLY_SCHEDULE)

@@ -7,13 +7,9 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        try {
-            parseInputs();
-            sort(numbers);
-            System.out.println("sorted:\n" + ArrayToString(numbers));
-        } catch (Exception e) {
-            System.out.println("BAD VALUE");
-        }
+        parseInputs();
+        sort(numbers);
+        System.out.println("sorted:\n" + ArrayToString(numbers));
     }
 
     private static void parseInputs() {

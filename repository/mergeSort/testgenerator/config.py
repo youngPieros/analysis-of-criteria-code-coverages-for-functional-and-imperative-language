@@ -1,1 +1,3 @@
-number_counts = 10
+testcase_numbers = 10
+number_counts = 30
+include_repetitive_numbers = [True, False]

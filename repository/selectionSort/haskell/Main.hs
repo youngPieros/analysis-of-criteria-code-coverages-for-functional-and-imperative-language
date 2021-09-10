@@ -14,6 +14,5 @@ main = do
   numberCounts <- getLine
   args <- getLine
   let inputs = parseInputs  (words args)
-  let maxBubble = max (head inputs) (head.tail $ inputs)
   let sortedNumbers =  selectionSort inputs
   putStrLn ("sorted:\n" ++ (show sortedNumbers :: String))

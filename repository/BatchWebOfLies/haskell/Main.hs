@@ -32,7 +32,7 @@ pair = liftA2 (,)
 main :: IO ()
 main = C.interact $ runScanner (C.pack <$> runScript)
 
-data Query = AddRelation Int Int | RemoveRelation Int Int | Kill deriving (Eq, Show)
+data Query = AddRelation Int Int | RemoveRelation Int Int | Kill
 type TestCase = (Int, [(Int, Int)], [Query])
 
 query :: Scanner Query
@@ -48,7 +48,6 @@ showInLine array = unlines (map show array)
 
 runScript :: Scanner String
 runScript = do
-  let numberOfTestCases = 1
   testCase <- testCase
   let result = solve testCase
   return (showInLine result)

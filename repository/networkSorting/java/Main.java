@@ -37,10 +37,7 @@ public class Main {
     }
 
     private boolean isNetworkEmpty() {
-        return
-                this.networkSize == 0
-                &&
-                this.numberOfStages == 0;
+        return this.networkSize == 0;
     }
 
     private void readNetworkParameters() {
