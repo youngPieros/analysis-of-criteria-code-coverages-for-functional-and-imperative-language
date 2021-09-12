@@ -89,6 +89,7 @@ e.g. ```bash ccs.sh linearSearch -i```
 <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 e.g. ```bash ccs.sh linearSearch -l``` 
 <br>
+
 ### bccs script
 &emsp;&emsp;&emsp; bccs.sh is implemented for MS type projects:
 <br>&emsp;&emsp;&emsp; bccs scrips runs below statements:
@@ -121,6 +122,7 @@ e.g. ```bash bccs.sh batchScheduling -h``` run script just for haskell codes
 3) [-bt or --batch-testcases] : If test generator makes some test case files instead of single test case, script can run all them with this option
 <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; e.g. ```bash bccs.sh selectionSort -h -bt``` 
 <br>
+
 ### pccs script:
 &emsp;&emsp;&emsp; pccs.sh is implemented for PS type projects:
 <br>&emsp;&emsp;&emsp; pccs.sh run below statements:
